@@ -1,0 +1,262 @@
+INFO:.pull_df_data: Data pulled from meiotic_frequencies_mayomate.csv successfully.
+INFO:.build_genotype_dict: Appended premeiotic 9.78e-07 Postmeiotic 1.01e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 9.78e-07 Postmeiotic 1.01e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 1.21e-06 Postmeiotic 9.2e-06 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 1.21e-06 Postmeiotic 9.2e-06 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.94e-06 Postmeiotic 1.77e-06 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.94e-06 Postmeiotic 1.77e-06 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 1.87e-07 Postmeiotic 1.19e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 1.87e-07 Postmeiotic 1.19e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.66e-06 Postmeiotic 8.67e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.66e-06 Postmeiotic 8.67e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 1.24e-06 Postmeiotic 7.99e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 1.24e-06 Postmeiotic 7.99e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.1e-06 Postmeiotic 7.29e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.1e-06 Postmeiotic 7.29e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 8.6e-07 Postmeiotic 6.53e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 8.6e-07 Postmeiotic 6.53e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 7.99e-07 Postmeiotic 0.000172088 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 7.99e-07 Postmeiotic 0.000172088 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 8.71e-07 Postmeiotic 0.00024816 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 8.71e-07 Postmeiotic 0.00024816 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 6.36e-07 Postmeiotic 7.97e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 6.36e-07 Postmeiotic 7.97e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 5.04e-07 Postmeiotic 0.000163368 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 5.04e-07 Postmeiotic 0.000163368 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 4.04e-06 Postmeiotic 0.000554 To genotype ung1∆SNPless A3A.
+INFO:.build_genotype_dict: Appended premeiotic 4.04e-06 Postmeiotic 0.000554 To genotype ung1∆SNPless A3A.
+INFO:.build_genotype_dict: Appended premeiotic 3.8e-06 Postmeiotic 0.000388 To genotype ung1∆SNPless A3A.
+INFO:.build_genotype_dict: Appended premeiotic 3.8e-06 Postmeiotic 0.000388 To genotype ung1∆SNPless A3A.
+INFO:.build_genotype_dict: Appended premeiotic 3.62e-06 Postmeiotic 0.00032 To genotype ung1∆SNPless A3A.
+INFO:.build_genotype_dict: Appended premeiotic 3.62e-06 Postmeiotic 0.00032 To genotype ung1∆SNPless A3A.
+INFO:.build_genotype_dict: Appended premeiotic 1.87e-06 Postmeiotic 0.000436 To genotype ung1∆SNPless A3A.
+INFO:.build_genotype_dict: Appended premeiotic 1.87e-06 Postmeiotic 0.000436 To genotype ung1∆SNPless A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.83e-06 Postmeiotic 0.000136483 To genotype ung1∆pol3-5DV A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.83e-06 Postmeiotic 0.000136483 To genotype ung1∆pol3-5DV A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.48e-06 Postmeiotic 0.000146861 To genotype ung1∆pol3-5DV A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.48e-06 Postmeiotic 0.000146861 To genotype ung1∆pol3-5DV A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2e-06 Postmeiotic 0.000104946 To genotype ung1∆pol3-5DV A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2e-06 Postmeiotic 0.000104946 To genotype ung1∆pol3-5DV A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.8e-06 Postmeiotic 0.000124444 To genotype ung1∆pol3-5DV A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.8e-06 Postmeiotic 0.000124444 To genotype ung1∆pol3-5DV A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.28e-06 Postmeiotic 6.01e-05 To genotype ung1∆mlh1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.28e-06 Postmeiotic 6.01e-05 To genotype ung1∆mlh1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 3.23e-06 Postmeiotic 5.46e-05 To genotype ung1∆mlh1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 3.23e-06 Postmeiotic 5.46e-05 To genotype ung1∆mlh1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 3.82e-06 Postmeiotic 6.18e-05 To genotype ung1∆mlh1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 3.82e-06 Postmeiotic 6.18e-05 To genotype ung1∆mlh1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 5.69e-08 Postmeiotic 7.65e-05 To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 5.69e-08 Postmeiotic 7.65e-05 To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 5.15e-08 Postmeiotic 0.000138856 To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 5.15e-08 Postmeiotic 0.000138856 To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 6.67e-08 Postmeiotic 0.000151515 To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 6.67e-08 Postmeiotic 0.000151515 To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 3.2e-08 Postmeiotic 0.000200966 To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 3.2e-08 Postmeiotic 0.000200966 To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic nan Postmeiotic nan To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic nan Postmeiotic nan To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic nan Postmeiotic nan To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic nan Postmeiotic nan To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic nan Postmeiotic nan To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic nan Postmeiotic nan To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic nan Postmeiotic nan To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic nan Postmeiotic nan To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 1.16e-06 Postmeiotic 6.33e-05 To genotype ung1∆pol32∆exo1-nd,pif1-m2 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 1.16e-06 Postmeiotic 6.33e-05 To genotype ung1∆pol32∆exo1-nd,pif1-m2 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 9.4e-07 Postmeiotic 8.31e-05 To genotype ung1∆pol32∆exo1-nd,pif1-m2 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 9.4e-07 Postmeiotic 8.31e-05 To genotype ung1∆pol32∆exo1-nd,pif1-m2 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 1.29e-06 Postmeiotic 6.22e-05 To genotype ung1∆pol32∆exo1-nd,pif1-m2 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 1.29e-06 Postmeiotic 6.22e-05 To genotype ung1∆pol32∆exo1-nd,pif1-m2 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 6.17e-07 Postmeiotic 5.53e-05 To genotype ung1∆pol32∆exo1-nd,pif1-m2 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 6.17e-07 Postmeiotic 5.53e-05 To genotype ung1∆pol32∆exo1-nd,pif1-m2 A3A.
+INFO:.pull_df_data: Data pulled from meiotic_frequencies_mayomate.csv successfully.
+INFO:.build_genotype_dict: Appended premeiotic 9.78e-07 Postmeiotic 1.01e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 9.78e-07 Postmeiotic 1.01e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 1.21e-06 Postmeiotic 9.2e-06 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 1.21e-06 Postmeiotic 9.2e-06 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.94e-06 Postmeiotic 1.77e-06 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.94e-06 Postmeiotic 1.77e-06 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 1.87e-07 Postmeiotic 1.19e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 1.87e-07 Postmeiotic 1.19e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.66e-06 Postmeiotic 8.67e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.66e-06 Postmeiotic 8.67e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 1.24e-06 Postmeiotic 7.99e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 1.24e-06 Postmeiotic 7.99e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.1e-06 Postmeiotic 7.29e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.1e-06 Postmeiotic 7.29e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 8.6e-07 Postmeiotic 6.53e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 8.6e-07 Postmeiotic 6.53e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 7.99e-07 Postmeiotic 0.000172088 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 7.99e-07 Postmeiotic 0.000172088 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 8.71e-07 Postmeiotic 0.00024816 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 8.71e-07 Postmeiotic 0.00024816 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 6.36e-07 Postmeiotic 7.97e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 6.36e-07 Postmeiotic 7.97e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 5.04e-07 Postmeiotic 0.000163368 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 5.04e-07 Postmeiotic 0.000163368 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 4.04e-06 Postmeiotic 0.000554 To genotype ung1∆SNPless A3A.
+INFO:.build_genotype_dict: Appended premeiotic 4.04e-06 Postmeiotic 0.000554 To genotype ung1∆SNPless A3A.
+INFO:.build_genotype_dict: Appended premeiotic 3.8e-06 Postmeiotic 0.000388 To genotype ung1∆SNPless A3A.
+INFO:.build_genotype_dict: Appended premeiotic 3.8e-06 Postmeiotic 0.000388 To genotype ung1∆SNPless A3A.
+INFO:.build_genotype_dict: Appended premeiotic 3.62e-06 Postmeiotic 0.00032 To genotype ung1∆SNPless A3A.
+INFO:.build_genotype_dict: Appended premeiotic 3.62e-06 Postmeiotic 0.00032 To genotype ung1∆SNPless A3A.
+INFO:.build_genotype_dict: Appended premeiotic 1.87e-06 Postmeiotic 0.000436 To genotype ung1∆SNPless A3A.
+INFO:.build_genotype_dict: Appended premeiotic 1.87e-06 Postmeiotic 0.000436 To genotype ung1∆SNPless A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.83e-06 Postmeiotic 0.000136483 To genotype ung1∆pol3-5DV A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.83e-06 Postmeiotic 0.000136483 To genotype ung1∆pol3-5DV A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.48e-06 Postmeiotic 0.000146861 To genotype ung1∆pol3-5DV A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.48e-06 Postmeiotic 0.000146861 To genotype ung1∆pol3-5DV A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2e-06 Postmeiotic 0.000104946 To genotype ung1∆pol3-5DV A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2e-06 Postmeiotic 0.000104946 To genotype ung1∆pol3-5DV A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.8e-06 Postmeiotic 0.000124444 To genotype ung1∆pol3-5DV A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.8e-06 Postmeiotic 0.000124444 To genotype ung1∆pol3-5DV A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.28e-06 Postmeiotic 6.01e-05 To genotype ung1∆mlh1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.28e-06 Postmeiotic 6.01e-05 To genotype ung1∆mlh1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 3.23e-06 Postmeiotic 5.46e-05 To genotype ung1∆mlh1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 3.23e-06 Postmeiotic 5.46e-05 To genotype ung1∆mlh1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 3.82e-06 Postmeiotic 6.18e-05 To genotype ung1∆mlh1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 3.82e-06 Postmeiotic 6.18e-05 To genotype ung1∆mlh1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 5.69e-08 Postmeiotic 7.65e-05 To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 5.69e-08 Postmeiotic 7.65e-05 To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 5.15e-08 Postmeiotic 0.000138856 To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 5.15e-08 Postmeiotic 0.000138856 To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 6.67e-08 Postmeiotic 0.000151515 To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 6.67e-08 Postmeiotic 0.000151515 To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 3.2e-08 Postmeiotic 0.000200966 To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 3.2e-08 Postmeiotic 0.000200966 To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic nan Postmeiotic nan To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic nan Postmeiotic nan To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic nan Postmeiotic nan To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic nan Postmeiotic nan To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic nan Postmeiotic nan To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic nan Postmeiotic nan To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic nan Postmeiotic nan To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic nan Postmeiotic nan To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 1.16e-06 Postmeiotic 6.33e-05 To genotype ung1∆pol32∆exo1-nd,pif1-m2 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 1.16e-06 Postmeiotic 6.33e-05 To genotype ung1∆pol32∆exo1-nd,pif1-m2 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 9.4e-07 Postmeiotic 8.31e-05 To genotype ung1∆pol32∆exo1-nd,pif1-m2 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 9.4e-07 Postmeiotic 8.31e-05 To genotype ung1∆pol32∆exo1-nd,pif1-m2 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 1.29e-06 Postmeiotic 6.22e-05 To genotype ung1∆pol32∆exo1-nd,pif1-m2 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 1.29e-06 Postmeiotic 6.22e-05 To genotype ung1∆pol32∆exo1-nd,pif1-m2 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 6.17e-07 Postmeiotic 5.53e-05 To genotype ung1∆pol32∆exo1-nd,pif1-m2 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 6.17e-07 Postmeiotic 5.53e-05 To genotype ung1∆pol32∆exo1-nd,pif1-m2 A3A.
+INFO:.meiotic_stats: Genotype data retrieved for meiotic stats calculation.
+INFO:.meiotic_stats: Calculated stats for genotype ung1∆ A3A:
+                    Premeiotic={'median': 9245.0, 'range': (1870.0, 29399.0), 'count': 12} 
+                    Postmeiotic={'median': 763000.0, 'range': (17700.0, 2481600.0), 'count': 12}
+INFO:.meiotic_stats: Calculated stats for genotype ung1∆SNPless A3A:
+                    Premeiotic={'median': 37100.0, 'range': (18700.0, 40400.0), 'count': 4} 
+                    Postmeiotic={'median': 4120000.0, 'range': (3200000.0, 5540000.0), 'count': 4}
+INFO:.meiotic_stats: Calculated stats for genotype ung1∆pol3-5DV A3A:
+                    Premeiotic={'median': 26400.0, 'range': (20000.0, 28300.0), 'count': 4} 
+                    Postmeiotic={'median': 1304634.5, 'range': (1049460.0, 1468610.0), 'count': 4}
+INFO:.meiotic_stats: Calculated stats for genotype ung1∆mlh1∆ A3A:
+                    Premeiotic={'median': 32300.0, 'range': (22800.0, 38200.0), 'count': 3} 
+                    Postmeiotic={'median': 601000.0, 'range': (546000.0, 618000.0), 'count': 3}
+INFO:.meiotic_stats: Calculated stats for genotype ung1∆pol3-01 A3A:
+                    Premeiotic={'median': nan, 'range': (nan, nan), 'count': 4} 
+                    Postmeiotic={'median': nan, 'range': (nan, nan), 'count': 4}
+INFO:.meiotic_stats: Calculated stats for genotype ung1∆pol32∆exo1-nd,pif1-m2 A3A:
+                    Premeiotic={'median': 10499.5, 'range': (6170.0, 12900.0), 'count': 4} 
+                    Postmeiotic={'median': 627499.0, 'range': (553000.0, 831000.0), 'count': 4}
+INFO:.meiotic_stats: meiotic_stats completed successfully.
+INFO:.plot_meiotic_frequencies: Meiotic statistics retrieved for plotting.
+INFO:.pull_df_data: Data pulled from meiotic_frequencies_mayomate.csv successfully.
+INFO:.build_genotype_dict: Appended premeiotic 9.78e-07 Postmeiotic 1.01e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 9.78e-07 Postmeiotic 1.01e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 1.21e-06 Postmeiotic 9.2e-06 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 1.21e-06 Postmeiotic 9.2e-06 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.94e-06 Postmeiotic 1.77e-06 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.94e-06 Postmeiotic 1.77e-06 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 1.87e-07 Postmeiotic 1.19e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 1.87e-07 Postmeiotic 1.19e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.66e-06 Postmeiotic 8.67e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.66e-06 Postmeiotic 8.67e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 1.24e-06 Postmeiotic 7.99e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 1.24e-06 Postmeiotic 7.99e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.1e-06 Postmeiotic 7.29e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.1e-06 Postmeiotic 7.29e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 8.6e-07 Postmeiotic 6.53e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 8.6e-07 Postmeiotic 6.53e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 7.99e-07 Postmeiotic 0.000172088 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 7.99e-07 Postmeiotic 0.000172088 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 8.71e-07 Postmeiotic 0.00024816 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 8.71e-07 Postmeiotic 0.00024816 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 6.36e-07 Postmeiotic 7.97e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 6.36e-07 Postmeiotic 7.97e-05 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 5.04e-07 Postmeiotic 0.000163368 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 5.04e-07 Postmeiotic 0.000163368 To genotype ung1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 4.04e-06 Postmeiotic 0.000554 To genotype ung1∆SNPless A3A.
+INFO:.build_genotype_dict: Appended premeiotic 4.04e-06 Postmeiotic 0.000554 To genotype ung1∆SNPless A3A.
+INFO:.build_genotype_dict: Appended premeiotic 3.8e-06 Postmeiotic 0.000388 To genotype ung1∆SNPless A3A.
+INFO:.build_genotype_dict: Appended premeiotic 3.8e-06 Postmeiotic 0.000388 To genotype ung1∆SNPless A3A.
+INFO:.build_genotype_dict: Appended premeiotic 3.62e-06 Postmeiotic 0.00032 To genotype ung1∆SNPless A3A.
+INFO:.build_genotype_dict: Appended premeiotic 3.62e-06 Postmeiotic 0.00032 To genotype ung1∆SNPless A3A.
+INFO:.build_genotype_dict: Appended premeiotic 1.87e-06 Postmeiotic 0.000436 To genotype ung1∆SNPless A3A.
+INFO:.build_genotype_dict: Appended premeiotic 1.87e-06 Postmeiotic 0.000436 To genotype ung1∆SNPless A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.83e-06 Postmeiotic 0.000136483 To genotype ung1∆pol3-5DV A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.83e-06 Postmeiotic 0.000136483 To genotype ung1∆pol3-5DV A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.48e-06 Postmeiotic 0.000146861 To genotype ung1∆pol3-5DV A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.48e-06 Postmeiotic 0.000146861 To genotype ung1∆pol3-5DV A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2e-06 Postmeiotic 0.000104946 To genotype ung1∆pol3-5DV A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2e-06 Postmeiotic 0.000104946 To genotype ung1∆pol3-5DV A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.8e-06 Postmeiotic 0.000124444 To genotype ung1∆pol3-5DV A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.8e-06 Postmeiotic 0.000124444 To genotype ung1∆pol3-5DV A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.28e-06 Postmeiotic 6.01e-05 To genotype ung1∆mlh1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 2.28e-06 Postmeiotic 6.01e-05 To genotype ung1∆mlh1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 3.23e-06 Postmeiotic 5.46e-05 To genotype ung1∆mlh1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 3.23e-06 Postmeiotic 5.46e-05 To genotype ung1∆mlh1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 3.82e-06 Postmeiotic 6.18e-05 To genotype ung1∆mlh1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 3.82e-06 Postmeiotic 6.18e-05 To genotype ung1∆mlh1∆ A3A.
+INFO:.build_genotype_dict: Appended premeiotic 5.69e-08 Postmeiotic 7.65e-05 To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 5.69e-08 Postmeiotic 7.65e-05 To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 5.15e-08 Postmeiotic 0.000138856 To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 5.15e-08 Postmeiotic 0.000138856 To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 6.67e-08 Postmeiotic 0.000151515 To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 6.67e-08 Postmeiotic 0.000151515 To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 3.2e-08 Postmeiotic 0.000200966 To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 3.2e-08 Postmeiotic 0.000200966 To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic nan Postmeiotic nan To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic nan Postmeiotic nan To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic nan Postmeiotic nan To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic nan Postmeiotic nan To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic nan Postmeiotic nan To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic nan Postmeiotic nan To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic nan Postmeiotic nan To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic nan Postmeiotic nan To genotype ung1∆pol3-01 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 1.16e-06 Postmeiotic 6.33e-05 To genotype ung1∆pol32∆exo1-nd,pif1-m2 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 1.16e-06 Postmeiotic 6.33e-05 To genotype ung1∆pol32∆exo1-nd,pif1-m2 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 9.4e-07 Postmeiotic 8.31e-05 To genotype ung1∆pol32∆exo1-nd,pif1-m2 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 9.4e-07 Postmeiotic 8.31e-05 To genotype ung1∆pol32∆exo1-nd,pif1-m2 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 1.29e-06 Postmeiotic 6.22e-05 To genotype ung1∆pol32∆exo1-nd,pif1-m2 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 1.29e-06 Postmeiotic 6.22e-05 To genotype ung1∆pol32∆exo1-nd,pif1-m2 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 6.17e-07 Postmeiotic 5.53e-05 To genotype ung1∆pol32∆exo1-nd,pif1-m2 A3A.
+INFO:.build_genotype_dict: Appended premeiotic 6.17e-07 Postmeiotic 5.53e-05 To genotype ung1∆pol32∆exo1-nd,pif1-m2 A3A.
+INFO:.conduct_mann_whitney_test: Conducted Mann-Whitney U test between ung1∆ A3A and ung1∆ A3A for premeiotic and postmeiotic frequencies.
+INFO:.conduct_mann_whitney_test: Results: {'premeiotic': {'p_value': 1.0, 'median_genotype1': 9245.0, 'median_genotype2': 9245.0}, 'postmeiotic': {'p_value': 1.0, 'median_genotype1': 763000.0, 'median_genotype2': 763000.0}}
+INFO:.conduct_mann_whitney_test: Conducted Mann-Whitney U test between ung1∆SNPless A3A and ung1∆ A3A for premeiotic and postmeiotic frequencies.
+INFO:.conduct_mann_whitney_test: Results: {'premeiotic': {'p_value': 0.007692307692307693, 'median_genotype1': 37100.0, 'median_genotype2': 9245.0}, 'postmeiotic': {'p_value': 0.001098901098901099, 'median_genotype1': 4120000.0, 'median_genotype2': 763000.0}}
+INFO:.conduct_mann_whitney_test: Conducted Mann-Whitney U test between ung1∆pol3-5DV A3A and ung1∆ A3A for premeiotic and postmeiotic frequencies.
+INFO:.conduct_mann_whitney_test: Results: {'premeiotic': {'p_value': 0.04175824175824176, 'median_genotype1': 26400.0, 'median_genotype2': 9245.0}, 'postmeiotic': {'p_value': 0.17032967032967034, 'median_genotype1': 1304634.5, 'median_genotype2': 763000.0}}
+INFO:.conduct_mann_whitney_test: Conducted Mann-Whitney U test between ung1∆mlh1∆ A3A and ung1∆ A3A for premeiotic and postmeiotic frequencies.
+INFO:.conduct_mann_whitney_test: Results: {'premeiotic': {'p_value': 0.017582417582417582, 'median_genotype1': 32300.0, 'median_genotype2': 9245.0}, 'postmeiotic': {'p_value': 0.44835164835164837, 'median_genotype1': 601000.0, 'median_genotype2': 763000.0}}
+INFO:.conduct_mann_whitney_test: Conducted Mann-Whitney U test between ung1∆pol3-01 A3A and ung1∆ A3A for premeiotic and postmeiotic frequencies.
+INFO:.conduct_mann_whitney_test: Results: {'premeiotic': {'p_value': 0.001098901098901099, 'median_genotype1': nan, 'median_genotype2': 9245.0}, 'postmeiotic': {'p_value': 0.21208791208791208, 'median_genotype1': nan, 'median_genotype2': 763000.0}}
+INFO:.conduct_mann_whitney_test: Conducted Mann-Whitney U test between ung1∆pol32∆exo1-nd,pif1-m2 A3A and ung1∆ A3A for premeiotic and postmeiotic frequencies.
+INFO:.conduct_mann_whitney_test: Results: {'premeiotic': {'p_value': 1.0, 'median_genotype1': 10499.5, 'median_genotype2': 9245.0}, 'postmeiotic': {'p_value': 0.6835164835164834, 'median_genotype1': 627499.0, 'median_genotype2': 763000.0}}
+INFO:.identify_significant_comparisons: Significant comparison identified: ung1∆SNPless A3A (premeiotic) with p-value 0.0077
+INFO:.identify_significant_comparisons: Significant comparison identified: ung1∆SNPless A3A (postmeiotic) with p-value 0.0011
+INFO:.identify_significant_comparisons: Significant comparison identified: ung1∆pol3-5DV A3A (premeiotic) with p-value 0.0418
+INFO:.identify_significant_comparisons: Significant comparison identified: ung1∆mlh1∆ A3A (premeiotic) with p-value 0.0176
+INFO:.identify_significant_comparisons: Significant comparison identified: ung1∆pol3-01 A3A (premeiotic) with p-value 0.0011
+INFO:.add_asterisk_to_significant_comparisons: Genotype ung1∆SNPless A3A is statistically different to ung1∆
+INFO:.add_asterisk_to_significant_comparisons: Genotype ung1∆SNPless A3A is statistically different to ung1∆
+INFO:.add_asterisk_to_significant_comparisons: Genotype ung1∆SNPless A3A is statistically different to ung1∆
+INFO:.add_asterisk_to_significant_comparisons: Genotype ung1∆SNPless A3A is statistically different to ung1∆
+INFO:.add_asterisk_to_significant_comparisons: Genotype ung1∆SNPless A3A is statistically different to ung1∆
+INFO:.add_asterisk_to_significant_comparisons: Genotype ung1∆SNPless A3A is statistically different to ung1∆
+INFO:.add_asterisk_to_significant_comparisons: Genotype ung1∆SNPless A3A is statistically different to ung1∆
+INFO:.add_asterisk_to_significant_comparisons: Genotype ung1∆SNPless A3A is statistically different to ung1∆
+INFO:.add_asterisk_to_significant_comparisons: Genotype ung1∆SNPless A3A is statistically different to ung1∆
+INFO:.add_asterisk_to_significant_comparisons: Genotype ung1∆SNPless A3A is statistically different to ung1∆
+INFO:.plot_meiotic_frequencies: Meiotic frequencies plot saved to meiotic_frequencies_plot.png.
