@@ -16,7 +16,8 @@ logging.basicConfig(
         encoding='utf-8', 
         mode='w')],
     level=logging.INFO,
-    format='%(levelname)s:.%(funcName)s: %(message)s')
+    format='%(levelname)s:.%(funcName)s: %(message)s',
+    force=True)
 logger = logging.getLogger(__name__)
 
 genotype_dict = genotype_dict_master[cfg["genotype_dict"]]
@@ -36,6 +37,7 @@ def check_canonnical_row(row: pd.Series) -> bool:
         if row['Tumor_Seq_Allele2'] == "A":
             return False
         else:
+            
             return True
     
     #else its an error
@@ -48,6 +50,8 @@ def check_canonnical(df: pd.DataFrame) -> bool:
     for index, row in df.iterrows():
         non_canonical = check_canonnical_row(row)
         if non_canonical:
+            for i in df.genotype.unique():
+                logging.info(f"Non-canonical mutation found in cluster ID {row['Dataset_Cluster_ID']} for genotype {i}")
             break
     return non_canonical
 
@@ -237,7 +241,7 @@ def plot_stacked_bar_chart_clusters(
     plt.title(title, fontsize=30, fontweight='bold')
     plt.xlabel("Genotype", fontsize=20, fontweight='bold')
     plt.ylabel("% of Clusters", fontsize=20, fontweight='bold')
-    plt.xticks(fontstyle='italic', fontsize=20)
+    plt.xticks(rotation=45, fontstyle='italic', fontsize=20, ha='right')
     plt.legend(loc='center left', bbox_to_anchor=(1.0, 0.5), fontsize=12)
     plt.tight_layout()
     if save_name is not None:
@@ -266,7 +270,8 @@ def plot_cluster_length(master_df: pd.DataFrame, save_name: str|None = None) -> 
         "sgs1∆C": "sgs1∆C",
         "exo1-ndsgs1∆C": "exo1-nd sgs1∆C",
         })
-    master_df['cluster_length'] = master_df['cluster_length']/1000
+    master_df['cluster_length'] = master_df['cluster_length']/1000 # converting to kb
+
 
     order = [
         "non-switching", 
@@ -277,28 +282,44 @@ def plot_cluster_length(master_df: pd.DataFrame, save_name: str|None = None) -> 
     
     order_genotype = [
         "ung1∆", 
-        "ung1∆NAT", 
-        "exo1-nd", 
-        "pol32∆", 
-        "exo1-nd pol32∆",
-        "sgs1∆C", 
-        "exo1-nd sgs1∆C"]
+        # "ung1∆fun30∆",
+        # "ung1∆mph1∆",
+        "ung1∆msh2∆",
+        "ung1∆msh3∆",
+        "ung1∆mlh1∆",
+        # "ung1∆rnh201∆",
+        # "ung1∆rnh1∆",
+        # "ung1∆ 37C_A3A",
+        # "ung1∆ 37C_EV",
+        "ung1∆mlh2∆",
+        "ung1∆SNPless",
+        "ung1∆pol3_01",
+        "ung1∆pol3_5DV"
+        ]
     
     #make a colormap for the cluster types
     pallette = {
         "ung1∆": "tab:blue", 
-        "ung1∆NAT": "tab:orange", 
-        "exo1-nd": "tab:red", 
-        "pol32∆": "tab:green", 
-        "exo1-nd pol32∆": "tab:purple",
-        "sgs1∆C": "tab:pink", 
-        "exo1-nd sgs1∆C": "tab:gray"}
+        # "ung1∆fun30∆": "tab:orange", 
+        # "ung1∆mph1∆": "tab:brown", 
+        "ung1∆msh2∆": "tab:green", 
+        "ung1∆msh3∆": "tab:cyan",
+        "ung1∆mlh1∆": "tab:purple",
+        # "ung1∆rnh201∆": "tab:cyan",
+        # "ung1∆rnh1∆": "tab:red",
+        # "ung1∆ 37C_A3A": "tab:olive",
+        # "ung1∆ 37C_EV": "tab:olive",
+        "ung1∆mlh2∆": "tab:pink",
+        "ung1∆SNPless": "tab:blue",
+        "ung1∆pol3_01": "tab:orange",
+        "ung1∆pol3_5DV": "tab:purple"
+       }
 
     #make a series of violinplots for each cluster type by each genotype
     fig, ax = plt.subplots(figsize=(45, 20))
     sns.violinplot(x='cluster_type', y='cluster_length', hue='genotype', data=master_df, ax=ax, inner="quartile", density_norm="width", order=order, hue_order=order_genotype, palette=pallette)
     sns.swarmplot(x='cluster_type', y='cluster_length', hue='genotype', data=master_df, ax=ax, alpha=0.85, size=4, dodge=True, palette="dark:black", order=order, legend=False)
-    plt.xticks(rotation=0, fontsize=30)
+    plt.xticks(rotation=0, fontsize=20)
     ax.set_yticks(range(0, 71, 5))
     plt.yticks(fontsize=30)
     plt.subplots_adjust(bottom=0.15)
@@ -307,10 +328,10 @@ def plot_cluster_length(master_df: pd.DataFrame, save_name: str|None = None) -> 
     ax.set_ylabel("Cluster Length (kb)", fontsize=45)
     #place the legend outside of the plot
     ax.legend(fontsize=30, title_fontsize=45, title="Genotype", loc="upper left", bbox_to_anchor=(1, 1))
-    for t, l in zip(ax.legend_.texts, ["ung1∆", "ung1∆NAT", "exo1-nd", "pol32∆", "exo1-nd pol32∆", "sgs1∆C", "exo1-nd sgs1∆C"]):
-        t.set_text(l)
-        t.set_fontsize(30)
-        t.set_fontstyle("italic")
+    #for t, l in zip(ax.legend_.texts, ["ung1∆", "ung1∆NAT", "exo1-nd", "pol32∆", "exo1-nd pol32∆", "sgs1∆C", "exo1-nd sgs1∆C"]):
+     #   t.set_text(l)
+     #   t.set_fontsize(30)
+     #   t.set_fontstyle("italic")
 
     plt.ylim(0, 65)
     plt.tight_layout()
@@ -397,7 +418,7 @@ def cluster_type_mann_whitney(master_df: pd.DataFrame) -> pd.DataFrame:
             if len(df1) > 0 and len(df2) > 0:
 
                 stat, p = mannwhitneyu(df1['cluster_length'], df2['cluster_length'])
-                logging.info(f"cluster_type: {cluster_type:18}, genotype: {genotype:15}, p: {p:.6f}, mean: {mean2:.4f}kb vs. {mean1:.4f}kb, median: {median2:.4f}kb vs. {median1:.4f}kb")
+                logging.info(f"cluster_type: {cluster_type:18}, genotype: {genotype:15}, p: {p:.6f}, # Cluster: {len(df1)}, mean: {mean2:.4f}kb vs. {mean1:.4f}kb, median: {median2:.4f}kb vs. {median1:.4f}kb")
 
                 test_df = pd.concat([
                     test_df, pd.DataFrame({
@@ -409,7 +430,7 @@ def cluster_type_mann_whitney(master_df: pd.DataFrame) -> pd.DataFrame:
 
             else:
 
-                logging.info(f"cluster_type: {cluster_type:18}, genotype: {genotype:15}, p: NA, {mean2:.4f}kb vs. {genotype} mean: {mean1:.4f}kb, wt median: {median2:.4f}kb vs. {median1:.4f}kb")
+                logging.info(f"cluster_type: {cluster_type:18}, genotype: {genotype:15}, p: NA, # Cluster: {len(df1)}, mean: {mean2:.4f}kb vs. {genotype} mean: {mean1:.4f}kb, wt median: {median2:.4f}kb vs. {median1:.4f}kb")
                 test_df = pd.concat([
                     test_df, 
                     pd.DataFrame({
@@ -463,12 +484,20 @@ if __name__ == "__main__":
     GENOTYPES: list[str] = [
         # "ung1∆ non-selected",
         "ung1∆",
-        #"ung1∆NAT",
-        "exo1-nd",
-        "pol32∆",
-        "exo1-ndpol32∆",
-        "sgs1∆C",
-        "exo1-ndsgs1∆C",
+        # #"ung1∆NAT",
+        # "ung1∆fun30∆",
+        # "ung1∆mph1∆",
+        "ung1∆msh2∆",
+        "ung1∆msh3∆",
+        "ung1∆mlh1∆",
+        # "ung1∆rnh201∆",
+        # "ung1∆rnh1∆",
+        # "ung1∆ 37C_A3A",
+        # "ung1∆ 37C_EV",
+        # "ung1∆mlh2∆",
+        # "ung1∆SNPless",
+        # "ung1∆pol3_01",
+        # "ung1∆pol3_5DV"
         # WT
         ]
     
@@ -478,7 +507,9 @@ if __name__ == "__main__":
         for cluster_association in cluster_associations:
             for sample_set in sample_sets:
                 for cluster_data_dir in cluster_data_dirs:
+                    logging.info(f"="*80)
                     logging.info(f"Working on {snp_support}snp support, {cluster_association}, {sample_set}, pval: {cluster_data_dir}...")
+                    logging.info(f"="*80)
                     
                     if association_feature != "both" and cluster_association == "all_clusters":
                         logging.info(f"association_feature: {association_feature} and cluster_association: {cluster_association} are not compatible. Skipping...")
@@ -593,6 +624,10 @@ if __name__ == "__main__":
                     print(proportion_master_df_bar)
                     logging.info("propotion of cluster types (number) by genotype")
                     logging.info(proportion_master_df_bar)
+                    # Logging the # of clusters for each genotype
+                    # for genotype in proportion_master_df_bar.index:
+                    #     total_clusters = master_df_bar.loc[genotype].sum()
+                    #     logging.info(f"Total clusters for genotype {genotype}: {total_clusters}")
 
                     plot_stacked_bar_chart_clusters(
                         proportion_master_df_bar, 

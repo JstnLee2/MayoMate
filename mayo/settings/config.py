@@ -17,7 +17,7 @@ config: dict = {
     "diploid": True,
     "mitochondrial_chr_name": ["ref|NC_001224|"],
     "SNP_NUM": 1,
-    "genotype_dict": "final_set",
+    "genotype_dict": "justin_set",
     "CLUSTER_TYPE_ANALYSIS": "JT",
     "SIG": 0.0001, # 0.01, 0.001, 0.0001, 0.00001
     "CLUST_INTER_MUT_MAX": 10000,

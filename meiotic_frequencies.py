@@ -21,7 +21,7 @@ def main():
     Docstring for main
     """
 
-    genotypes_to_plot = ["ung1∆ A3A", "ung1∆msh2∆ A3A", "ung1∆mlh1∆ A3A", "ung1∆SNPless A3A", "ung1∆pol3-01 A3A", "ung1∆pol3-5DV A3A", "ung1∆pol32∆exo1-nd,pif1-m2 A3A", "ung1∆msh2SNPless A3A"] # EV data: "ung1∆ EV", "ung1∆msh2∆ EV", "ung1∆mlh1∆ EV", "ung1∆SNPless EV", "ung1∆pol3-01 EV", "ung1∆pol3-5DV EV", "ung1∆pol32∆exo1-nd,pif1-m2 EV", "ung1∆msh2SNPless EV"       A3A data: "ung1∆ A3A", "ung1∆msh2∆ A3A", "ung1∆mlh1∆ A3A", "ung1∆SNPless A3A", "ung1∆pol3-01 A3A", "ung1∆pol3-5DV A3A", "ung1∆pol32∆exo1-nd,pif1-m2 A3A", "ung1∆msh2SNPless A3A"
+    genotypes_to_plot = ["ung1∆ A3A", "ung1∆msh2∆ A3A", "ung1∆mlh1∆ A3A", "ung1∆SNPless A3A", "ung1∆msh2∆SNPless A3A", "ung1∆msh3∆ A3A", "ung1∆msh6∆ A3A"] # EV data: "ung1∆ EV", "ung1∆msh2∆ EV", "ung1∆mlh1∆ EV", "ung1∆SNPless EV", "ung1∆pol3-01 EV", "ung1∆pol3-5DV EV", "ung1∆pol32∆exo1-ndpif1-m2 EV", "ung1∆msh2SNPless EV"       A3A data: "ung1∆ A3A", "ung1∆msh2∆ A3A", "ung1∆mlh1∆ A3A", "ung1∆SNPless A3A", "ung1∆pol3-01 A3A", "ung1∆pol3-5DV A3A", "ung1∆pol32∆exo1-ndpif1-m2 A3A", "ung1∆msh2SNPless A3A"
 
     file_path = "meiotic_frequencies_mayomate.csv"
 
@@ -114,23 +114,26 @@ def conduct_mann_whitney_test(genotype_dict: dict) -> tuple[dict, dict]:
         post_values1 = pd.to_numeric(genotype_dict[genotype1]['postmeiotic'], errors='coerce')
         post_values2 = pd.to_numeric(genotype_dict[genotype2]['postmeiotic'], errors='coerce')
 
-        pre_stat, pre_p_value = stats.mannwhitneyu(pre_values1[~np.isnan(pre_values1)], pre_values2[~np.isnan(pre_values2)], alternative='two-sided')
-        post_stat, post_p_value = stats.mannwhitneyu(post_values1[~np.isnan(post_values1)], post_values2[~np.isnan(post_values2)], alternative='two-sided')
+        pre_stat, pre_p_value = stats.mannwhitneyu(pre_values1[np.isfinite(pre_values1)], pre_values2[np.isfinite(pre_values2)], alternative='two-sided')
+        post_stat, post_p_value = stats.mannwhitneyu(post_values1[np.isfinite(post_values1)], post_values2[np.isfinite(post_values2)], alternative='two-sided')
 
-        results[f"{genotype1}"] = {f"{genotype1}": {
+        
+
+        results[f"{genotype1}"] = {
             'premeiotic': {
-                'p_value': pre_p_value,
+                'p_value': float(pre_p_value),
                 f'median_genotype_{genotype1}': np.median(pre_values1),
                 'median_genotype2': np.median(pre_values2),
                 f'range_{genotype1}': (float(np.min(pre_values1)), float(np.max(pre_values1))) if len(pre_values1) > 0 else (np.nan, np.nan)
             },
             'postmeiotic': {
-                'p_value': post_p_value,
+                'p_value': float(post_p_value),
                 f'median_genotype_{genotype1}': np.median(post_values1),
                 'median_genotype2': np.median(post_values2),
                 f'range_{genotype1}': (float(np.min(post_values1)), float(np.max(post_values1))) if len(post_values1) > 0 else (np.nan, np.nan)
             }
-        }}
+        }
+
         logging.info(f"Conducted Mann-Whitney U test between {genotype1} and {genotype2} for premeiotic and postmeiotic frequencies.")
         logging.info(f"Results: {results[f'{genotype1}']}")
 
@@ -181,29 +184,37 @@ def conduct_mann_whitney_test(genotype_dict: dict) -> tuple[dict, dict]:
 #     logging.info(f'meiotic_stats completed successfully.')
 #     return meiotic_stats, genotype
 
-def identify_significant_comparisons(mann_whitney_input: dict, genotype_dict: dict, alpha: float = 0.05) -> dict:
+def identify_significant_comparisons(mann_whitney_input: dict, alpha: list[float] = [0.05, 0.01, 0.001, 0.0001]) -> dict:
     """
     Identifies significant comparisons from the Mann-Whitney U test results.
 
     Parameters:
     - mann_whitney_results (dict): A dictionary containing the results of the Mann-Whitney U tests.
-    - alpha (float): The significance level to use for determining significance. Default is 0.05.
+    - alpha (list[float]): The significance levels to use for determining significance. Default is [0.05, 0.01, 0.001, 0.0001].
 
     Returns:
     - tuple[dict, dict]: A tuple containing the significant comparisons and their p-values, and the genotype_dict.
     """
 
     significant_comparisons = {}
-    
-    for comparison, results in mann_whitney_input.items():
-        for condition in ['premeiotic', 'postmeiotic']:
-            p_value = results[condition]['p_value']
-            if p_value < alpha:
-                if comparison not in significant_comparisons:
-                    significant_comparisons[comparison] = {}
-                significant_comparisons[comparison][condition] = p_value
-                logging.info(f"Significant comparison identified: {comparison} ({condition}) with p-value {p_value:.4f}")
 
+    for genotype in mann_whitney_input.keys():
+        for condition in mann_whitney_input[genotype].keys():
+            logging.info(f"Checking significance for {genotype} under {condition} with p-value: {mann_whitney_input[genotype][condition]['p_value']}.")
+            p_value = mann_whitney_input[genotype][condition]['p_value']
+            n = 0 # indicate significance level to associate with # of asterisks.
+            significance_level = []
+            for i in alpha:
+                if p_value <= i:
+                    n += 1
+                    logging.info(f"Genotype {genotype} is statistically different to ung1∆ for {condition} frequencies with p-value {p_value} at alpha level {i}.")
+                    significance_level.append(n)
+            m = max(significance_level) if significance_level else 0    
+            if m > 0:    
+                significant_comparisons[f"{genotype}\n{condition}"] = m
+    logging.info(f"Significant comparisons: {significant_comparisons}")
+
+    
     return significant_comparisons
 
 
@@ -238,24 +249,41 @@ def plot_meiotic_frequencies(file_path: str,
     # Extract medians and ranges from the statistics dictionary produced by conduct_mann_whitney_test
     for genotype in stats.keys():
         medians[genotype] = {
-            'premeiotic': stats[genotype][genotype]['premeiotic'][f'median_genotype_{genotype}'],
-            'postmeiotic': stats[genotype][genotype]['postmeiotic'][f'median_genotype_{genotype}']
+            'premeiotic': stats[genotype]['premeiotic'][f'median_genotype_{genotype}'],
+            'postmeiotic': stats[genotype]['postmeiotic'][f'median_genotype_{genotype}']
         }
         ranges[genotype] = {
-            'premeiotic': stats[genotype][genotype]['premeiotic'][f'range_{genotype}'],
-            'postmeiotic': stats[genotype][genotype]['postmeiotic'][f'range_{genotype}']
+            'premeiotic': stats[genotype]['premeiotic'][f'range_{genotype}'],
+            'postmeiotic': stats[genotype]['postmeiotic'][f'range_{genotype}']
         }
+        logging.info(f"Medians and ranges extracted for plotting. \nMedians: {medians} \nRanges: {ranges}")
 
-    logging.info(f"Medians and ranges extracted for plotting. \nMedians: {medians} \nRanges: {ranges}")
+    # Medians and Ranges are filtered during conduct_mann_whitney_test.
+    medians = []
+    ranges = []
+    for genotype in stats.keys():
+        medians.append(stats[genotype]['premeiotic'][f'median_genotype_{genotype}'])
+        medians.append(stats[genotype]['postmeiotic'][f'median_genotype_{genotype}'])
+        ranges.append(stats[genotype]['premeiotic'][f'range_{genotype}'])
+        ranges.append(stats[genotype]['postmeiotic'][f'range_{genotype}'])
+    logging.info(f"Medians for plotting: {medians}")
+    logging.info(f"Ranges for plotting: {ranges}")
+    
+    filtered_labels = []
+    for genotype in genotype_dict.keys():
+        filtered_labels.extend([f"{genotype}\npremeiotic", f"{genotype}\npostmeiotic"])
+
+    logging.info(f"Labels for plotting: {filtered_labels}")
+    
 
     # Set the colors (Blue for premeiotic, Red for meiotic)
     colors = ['#3274a1', '#cc3333', '#3274a1', '#cc3333']
 
     # --- 2. PLOTTING ---
-    fig, ax = plt.subplots(figsize=(24, 14))
+    fig, ax = plt.subplots(figsize=(15, 10))
 
-    x_pos = np.arange(len(labels))
-    bars = ax.bar(x_pos, medians, color=colors, edgecolor='white', width=0.8)
+    x_pos = np.arange(len(filtered_labels))
+    bars = ax.bar(x_pos, medians, color=colors, edgecolor='white', width=0.75)
 
     # Set Y-axis to Logarithmic
     ax.set_yscale('log')
@@ -265,19 +293,17 @@ def plot_meiotic_frequencies(file_path: str,
     ax.set_ylabel('ura3-29 reversion frequency ($10^{10}$)', fontsize=14, fontweight='bold')
     ax.set_title('ura3-29 reversion frequencies', fontsize=18, fontweight='bold', pad=20)
     ax.set_xticks(x_pos)
-    labels = [label.replace(" ", "\n") for label in labels]  # Replace spaces with newlines for better readability
-    ax.set_xticklabels(labels, fontsize=10, rotation=60, fontweight='bold', fontstyle='italic')
+    labels = [label.replace(" ", "\n") for label in filtered_labels]  # Replace spaces with newlines for better readability
+    ax.set_xticklabels(labels, fontsize=14, rotation=60, fontweight='bold', fontstyle='italic')
 
     # Gridlines
-    ax.yaxis.grid(True, which='major', linestyle='-', linewidth=0.5, alpha=0.7)
+    ax.yaxis.grid(True, which='major', linestyle='-', linewidth=0.25, alpha=0.7)
     ax.set_axisbelow(True)
 
-    genotype_dict = build_genotype_dict(file_path, genotypes_to_plot)
-    mann_whitney_input = conduct_mann_whitney_test(genotype_dict)
-    significant_comparisons = identify_significant_comparisons(mann_whitney_input, genotype_dict)
-    print("=" *80)
-    print(significant_comparisons)
-    print("=" *80)
+    significant_comparisons = identify_significant_comparisons(stats)
+    logging.info("=" *80)
+    logging.info(f"Significant Comparisons: {significant_comparisons}")
+    logging.info("=" *80)
 
     # --- 3. ADDING TEXT OVERLAYS ---
     for i, bar in enumerate(bars):
@@ -285,15 +311,15 @@ def plot_meiotic_frequencies(file_path: str,
         
         # Add Median Label (White box with black border)
         ax.text(bar.get_x() + bar.get_width()/2., height * 1.3,
-                f'{int(medians[i])}',
+                f'{int(medians[i] if not np.isnan(medians[i]) else 0)}',
                 ha='center', va='center', fontweight='bold', fontsize=8,
                 bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.3'))
         
         # Add Range Label (Top text)
         low, high = ranges[i]
         ax.text(bar.get_x() + bar.get_width()/2., height * .7,
-                f'({int(low)} - {int(high)})',
-                ha='center', va='bottom', fontsize=6, fontweight='bold')
+                f'({float(low):.0f} - {float(high):.0f})',
+                ha='center', va='bottom', fontsize=6, fontweight='bold', )
         
         # If conduct_mann_whitney_test results are significant, add asterisk
         # Need to conduct the Mann-Whitney U test and check the p-values to determine significance
@@ -301,10 +327,11 @@ def plot_meiotic_frequencies(file_path: str,
         # Example: If significant, add an asterisk above the bar
         # If genotype is in the comparison and condition matches, add asterisk
     
-        if add_asterisk_to_significant_comparisons(significant_comparisons, genotype_dict):
-            ax.text(bar.get_x() + bar.get_width()/2., height * 1.0,
-                        '*',
-                        ha='center', va='bottom', fontsize=50, color='black', fontweight='bold')
+        for genotype in significant_comparisons.keys():
+            if genotype in filtered_labels[i]:  # Check if the genotype and condition match the current bar
+                ax.text(bar.get_x() + bar.get_width()/2., height * 1.3,
+                        '*' * significant_comparisons[genotype],  # Add multiple asterisks based on significance level
+                        ha='center', va='bottom', fontsize=25, color='black', fontweight='bold')
             
 
     plt.tight_layout()
