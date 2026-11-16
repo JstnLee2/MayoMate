@@ -9,3 +9,5 @@ from .nbinom import analyzeSampleForMutationClusters
 from .find_GC_CO import get_GC_CO, get_haplotype_lengths
 from .find_imbalanced_snps import find_imbalanced_snps
 from .prototypes import *
+from .sample_cache import (createParentalOriginDF_cached, import_samples_cached,
+                           createRecombinationMaps_cached, df_fingerprint, file_fingerprint)

@@ -1,5 +1,6 @@
 # This code was developed and authored by Jerzy Twarowski in Malkova Lab at the University of Iowa 
 # Contact: jerzymateusz-twarowski@uiowa.edu, tvarovski1@gmail.com
+import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -169,6 +170,8 @@ def plot_violin_plt(
     rename_dict = {
         'ung1∆'                         : 'ung1∆',
         'ung1∆ EV'                      : 'ung1∆ EV',
+        'ung1∆msh2∆'                      : 'ung1∆\nmsh2∆',
+        'ung1∆mlh1∆'                     : 'ung1∆\nmlh1∆',
         'ung1∆NAT'                      : 'ung1∆NAT',
         'UNG1'                          : 'UNG1',
         'exo1-nd'                       : 'ung1∆\nexo1-nd',
@@ -221,7 +224,7 @@ def plot_violin_plt(
     plt.title(f"{title}", fontsize=16, fontweight='bold')
     #plt.title(f"p-value = {pval:.4e}", fontsize=11, color='gray')
     plt.xlabel("Genotype", fontsize=12, fontweight='bold')
-    plt.xticks(fontweight='bold', fontsize=12, fontstyle='italic', rotation=0)
+    plt.xticks(fontweight='bold', fontsize=12, fontstyle='italic', rotation=45, ha='right') #set the x axis font size
     plt.ylabel(y_label, fontsize=12, fontweight='bold')
     #plt.gca().invert_xaxis() #reverse the order of the x axis
     plt.yticks(fontsize=12, fontweight='bold') #set the y axis font size
@@ -229,6 +232,19 @@ def plot_violin_plt(
     plt.locator_params(axis='y', nbins=10) #set the number of ticks on the y axis
     plt.gca().get_yaxis().set_major_formatter(FuncFormatter(lambda x, loc: "{:,}".format(int(x)) if x >= 0 else ""))
     
+    # OPTIONAL: enable log scale when caller passes yscale="log" in kwargs
+    if kwargs.get("yscale", "linear") == "log":
+        ax = plt.gca()
+        # replace non-positive bottom with a small positive value to avoid errors
+        ymin, ymax = ax.get_ylim()
+        if ymin <= 0:
+            # choose a sensible small positive lower bound (adjust if needed)
+            ymin = 1e-3
+            ax.set_ylim(bottom=ymin, top=ymax)
+        ax.set_yscale("log")
+        # adjust y-axis formatter for logs (optional)
+        ax.yaxis.set_major_formatter(FuncFormatter(lambda y, _: f"{y:g}"))
+        
     #get the span of the y axis, and add a 3% padding to the bottom
     ymin, ymax = plt.gca().get_ylim()
     y_span = ymax - ymin
@@ -409,7 +425,8 @@ def  conduct_cluster_data_analysis(
         'mutations',
         'scattered_mutations',
         'clusters',
-        'total_ssDNA_kb']
+        'total_ssDNA_kb'
+        ]
     
     if association != None:
         columns_to_plot.remove('mutations')
@@ -434,32 +451,46 @@ def  conduct_cluster_data_analysis(
         'clusters': 'Number of Clusters',
         'total_ssDNA_kb': 'Total ssDNA (kb)'}
     
+    # genotype1 is the REFERENCE genotype: every other genotype is compared against it.
+    if genotype1 not in set(df['genotype']):
+        raise ValueError(
+            f"Reference genotype '{genotype1}' has no samples in the data being analyzed "
+            f"(genotypes present: {sorted(set(df['genotype']))}). Add it to the genotype list or pick another reference.")
+    if not genotype2 or genotype2 not in set(df['genotype']):
+        # genotype2 is only used for the first, detailed comparison and file names; default to the first other genotype
+        others = [g for g in (genotypes_include or sorted(set(df['genotype']))) if g != genotype1 and g in set(df['genotype'])]
+        genotype2 = others[0] if others else genotype1
+
     set1 = df[df['genotype'] == genotype1]
     set2 = df[df['genotype'] == genotype2]
 
+    print(f"Reference genotype: {genotype1}")
     print(f"{genotype1} = {len(set1)}")
     print(f"{genotype2} = {len(set2)}")
 
-    all_genotypes = set(df['genotype']) # get all genotypes
-    all_genotypes.remove(genotype1) #remove ung1∆ from the list
+    all_genotypes = [g for g in (genotypes_include or sorted(set(df['genotype']))) if g in set(df['genotype']) and g != genotype1]
+    stats_rows = []  # every reference-vs-genotype Mann-Whitney p-value, saved to CSV at the end
 
     for column in columns_to_plot:
 
         print(df.groupby(['genotype'])[column].count())
-        
+
         #groupby genotypes and print mean and standard deviation, and conduct t-test, and mann-whitney u test
         pval, pval_u = groupby_genotypes_and_print_mean_std(df, set1, set2, column, genotype1, genotype2)
 
         for genotype in all_genotypes:
 
             print(f"\n###{genotype1} vs {genotype}###")
+            set1_secondary = df[df['genotype'] == genotype1]
+            set2_secondary = df[df['genotype'] == genotype]
+            row = {"metric": column, "reference": genotype1, "genotype": genotype,
+                   "n_reference": len(set1_secondary), "n_genotype": len(set2_secondary),
+                   "median_reference": set1_secondary[column].median(), "median_genotype": set2_secondary[column].median(),
+                   "mean_reference": set1_secondary[column].mean(), "mean_genotype": set2_secondary[column].mean()}
             try:
-                
-                print(f"ALL SAMPLES:")
-                set1_secondary = df[df['genotype'] == genotype1]
-                set2_secondary = df[df['genotype'] == genotype]
 
-                pval_u_secondary = conduct_mannutest(set1_secondary, set2_secondary, column)
+                print(f"ALL SAMPLES:")
+                row["p_mannwhitney_all"] = conduct_mannutest(set1_secondary, set2_secondary, column)
             except Exception as e:
                 print("Could not conduct Mann-Whitney U test on secondary comparison, skipping...")
 
@@ -469,7 +500,7 @@ def  conduct_cluster_data_analysis(
                 set1_secondary_no_outliers = set1_secondary[set1_secondary[column] > set1_secondary[column].quantile(0.2)]
                 set2_secondary_no_outliers = set2_secondary[set2_secondary[column] > set2_secondary[column].quantile(0.2)]
 
-                pval_u_outliers = conduct_mannutest(set1_secondary_no_outliers, set2_secondary_no_outliers, column)
+                row["p_mannwhitney_no_lowest_20pct"] = conduct_mannutest(set1_secondary_no_outliers, set2_secondary_no_outliers, column)
             except Exception as e:
                 print("Could not conduct Mann-Whitney U test on secondary comparison: no outliers, skipping...")
 
@@ -480,9 +511,10 @@ def  conduct_cluster_data_analysis(
                 set_1_secondary_uninduced = set1_secondary[set1_secondary['mutations'] > 10]
                 set_2_secondary_uninduced = set2_secondary[set2_secondary['mutations'] > 10]
 
-                pval_u_uninduced = conduct_mannutest(set_1_secondary_uninduced, set_2_secondary_uninduced, column)
+                row["p_mannwhitney_induced_only"] = conduct_mannutest(set_1_secondary_uninduced, set_2_secondary_uninduced, column)
             except Exception as e:
                 print("Could not conduct Mann-Whitney U test on secondary comparison: uninduced, skipping...")
+            stats_rows.append(row)
 
         plot_violin_plt(
             df=df.copy(),
@@ -504,3 +536,10 @@ def  conduct_cluster_data_analysis(
             root_fig_name=f'{root_fig_name}.html', 
             save=save_plotly)
         
+
+    # save every reference-vs-genotype comparison in one table
+    stats_path = f"outputs/clusters/stats_vs_{genotype1}_{root_fig_name}.csv"
+    os.makedirs(os.path.dirname(stats_path), exist_ok=True)
+    pd.DataFrame(stats_rows).to_csv(stats_path, index=False, encoding="utf-8")
+    print(f"\nSaved all {genotype1}-vs-genotype Mann-Whitney U p-values to {stats_path}")
+    logging.info(f"Saved reference ({genotype1}) comparisons to {stats_path}")

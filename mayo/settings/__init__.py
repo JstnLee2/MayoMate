@@ -6,3 +6,4 @@ from .config import *
 from .problematic_positions import *
 from .sample_genotypes import *
 from .non_essential_genes import *
+from .genotype_colors import *

@@ -1,0 +1,118 @@
+#!/bin/bash
+# =============================================================================
+# Open Grid Scheduler / Grid Engine (SGE) job:
+# runs main_playground_clean.ipynb top-to-bottom (no user input), then
+# cluster_analysis.py, cluster_coordination.py and cluster_association_chi2.py.
+#
+# Submit from the MayoMate folder on the cluster:
+#     qsub run_mayomate.sge
+#
+# Check on it:
+#     qstat -u $USER                 # qw = waiting, r = running, Eqw = error (see Troubleshooting in HPC_RUN_GUIDE.md)
+#     tail -f mayomate.o<jobid>      # live progress (one line per cell)
+#
+# Everything from this run is kept in its own folder (never overwritten):
+#     outputs/run_logs/<date_time>_job<jobid>/
+#         run_report.md / .json                 per-cell status, runtime, memory, errors
+#         main_playground_clean_executed.ipynb  notebook with all outputs
+#         logs/                                 copies of every log written during the run
+#         sge_<jobid>.out                       this job's screen output
+#
+# Lines marked  <-- EDIT  depend on your cluster. Ask your HPC admins if unsure.
+# =============================================================================
+#$ -N mayomate
+#$ -S /bin/bash
+#$ -cwd
+#$ -j y
+#$ -pe smp 4                  # <-- EDIT: parallel environment name; list them with  qconf -spl
+#$ -l h_vmem=8G               # <-- EDIT if needed: memory PER CPU (4 x 8G = 32G total); some clusters use mem_free
+#$ -l h_rt=08:00:00           # run-time limit (measured 2.5 h on a laptop)
+##$ -q all.q                  # <-- EDIT: queue name, only if your cluster needs one (remove one '#'); list with  qconf -sql
+##$ -m ea                     # optional: email when the job ends/aborts (remove one '#' here and below)
+##$ -M you@example.edu
+#
+# Memory: the notebook peaked at 12.4 GB (see HPC_RUN_GUIDE.md). h_vmem limits *virtual* memory,
+# which for Python is higher than real use, so 32G total is requested. If the job is killed
+# with "h_vmem exceeded" / a dead kernel, raise h_vmem (e.g. 12G).
+
+set -uo pipefail
+
+cd "${SGE_O_WORKDIR:-$PWD}"
+JOB="${JOB_ID:-local}"
+CPUS="${NSLOTS:-4}"
+
+RUN_DIR="outputs/run_logs/$(date +%Y%m%d_%H%M%S)_job${JOB}"
+mkdir -p "${RUN_DIR}/logs" outputs/logs
+START_MARKER="${RUN_DIR}/.started"
+touch "${START_MARKER}"
+
+# Copy this run's logs and the job's screen output into RUN_DIR (also runs if the job fails part-way).
+save_logs() {
+    find outputs/logs -maxdepth 1 -type f -newer "${START_MARKER}" -exec cp -p {} "${RUN_DIR}/logs/" \; 2>/dev/null
+    cp -p "mayomate.o${JOB}" "${RUN_DIR}/sge_${JOB}.out" 2>/dev/null
+}
+trap save_logs EXIT
+
+# --- Python environment ------------------------------------------------------
+# Batch jobs don't always have the "module" command; load it if the cluster has it.
+if ! command -v module > /dev/null 2>&1; then
+    for f in /etc/profile.d/modules.sh /usr/share/Modules/init/bash /etc/profile.d/lmod.sh; do
+        [ -f "$f" ] && source "$f" && break
+    done
+fi
+if command -v module > /dev/null 2>&1; then
+    module purge || true
+    module load python/3.10   # <-- EDIT: your cluster's Python 3.10 module; list with  module avail python
+fi
+PYTHON=$(command -v python3.10 || command -v python3 || command -v python)
+[ -n "${PYTHON}" ] || { echo "!!! no Python found: check the 'module load' line"; exit 1; }
+echo "Using ${PYTHON} ($("${PYTHON}" --version 2>&1))"
+
+# Create the virtual environment once (first run only), then reuse it.
+# Stops the job if anything here fails, so packages never go into the cluster's own Python.
+if [ ! -d "venv_hpc" ]; then
+    "${PYTHON}" -m venv venv_hpc || { echo "!!! could not create venv_hpc with ${PYTHON}"; rm -rf venv_hpc; exit 1; }
+    source venv_hpc/bin/activate || { echo "!!! could not activate venv_hpc"; rm -rf venv_hpc; exit 1; }
+    python -m pip install --upgrade pip
+    python -m pip install -r requirements.txt ipykernel nbclient nbformat psutil || { echo "!!! pip install failed"; rm -rf venv_hpc; exit 1; }
+else
+    source venv_hpc/bin/activate || { echo "!!! could not activate venv_hpc (delete the venv_hpc folder and resubmit)"; exit 1; }
+fi
+python -c "import sys; sys.exit(sys.prefix == sys.base_prefix)" || { echo "!!! python is not the venv_hpc one: $(command -v python)"; exit 1; }
+
+# Make the "python3" Jupyter kernel point at this environment's Python.
+python -m ipykernel install --sys-prefix --name python3 > /dev/null
+
+# --- Run ---------------------------------------------------------------------
+export MPLBACKEND=Agg                # no display on compute nodes; figures are still saved
+export PYTHONIOENCODING=utf-8
+export OMP_NUM_THREADS=${CPUS}
+
+echo "Job ${JOB} on $(hostname) started $(date), ${CPUS} CPUs"
+echo "Run folder: ${RUN_DIR}"
+status=0
+python run_notebook.py --continue-on-error --run-dir "${RUN_DIR}" ${RUN_NOTEBOOK_ARGS:-} || status=1
+
+# Follow-up analyses that use the notebook's saved results.
+# Reference genotype: REFERENCE (default ung1∆), e.g.  qsub -v REFERENCE=ung1∆SNPless run_mayomate.sge
+# RUN_SCRIPTS=0 runs only the notebook.
+if [ "${RUN_SCRIPTS:-1}" = "1" ]; then
+    REF_ARGS=""
+    if [ -n "${REFERENCE:-}" ]; then REF_ARGS="--reference ${REFERENCE}"; fi
+    for script in cluster_analysis.py cluster_coordination.py cluster_association_chi2.py; do
+        echo "=== ${script} ${REF_ARGS} ($(date))"
+        python "${script}" ${REF_ARGS} || { echo "!!! ${script} failed (see ${RUN_DIR}/logs/)"; status=1; }
+    done
+fi
+
+echo "Finished $(date) with exit code ${status}. Everything from this run: ${RUN_DIR}"
+# Only 0 or 1 is returned: Grid Engine treats exit code 99 as "requeue" and 100 as "error state".
+exit ${status}
+
+# Tips (-v sets a variable for the job, no need to edit this file):
+#     qsub -v REFERENCE=ung1∆SNPless run_mayomate.sge
+#     qsub -v RUN_SCRIPTS=0 run_mayomate.sge                       # notebook only
+#     qsub -v RUN_NOTEBOOK_ARGS="--skip 5 9" run_mayomate.sge      # skip cells
+#     qsub -l h_vmem=12G run_mayomate.sge                         # options given to qsub override the #$ lines
+# See cell numbers:
+#     python run_notebook.py --list

@@ -4,7 +4,7 @@
 from .TableSNP import TableSNP
 from .SwitchesTable import SwitchesTable
 from typing import Union, Literal, overload, TypeVar, List
-from numpy import NaN
+from numpy import nan as NaN
 import pandas as pd
 import logging
 
@@ -82,8 +82,8 @@ class OverlapSwitchesTable(TableSNP):
                 self.setUnusable()
 
         else:
-            logging.error(f'Error: cannot add switchesTable property. {self.name} and {SwitchesTable.name} have different name properties.')
-            raise ValueError(f'Error: cannot add switchesTable property. {self.name} and {SwitchesTable.name} have different name properties.')
+            logging.error(f'Error: cannot add switchesTable properly. {self.name} and {SwitchesTable.name} have different name properties.')
+            raise ValueError(f'Error: cannot add switchesTable properly. {self.name} and {SwitchesTable.name} have different name properties.')
 
     def addRandomSwitchesTable(self, SwitchesTable: SwitchesTable) -> None:
         """
@@ -447,7 +447,7 @@ class OverlapSwitchesTable(TableSNP):
         self.df_SNPs["Random_Clustered_Proximal"] = False
         self.df_SNPs["Random_Clustered_Proximal"] = (self.df_SNPs["Random_Switch_Proximal"] == True) & (self.df_SNPs["Is_Clustered"] == True)
 
-    def findRandomClusters(self, window_size: int) -> None:
+    def findRandomClusters(self, window_size: int) -> None:   
 
         #get all clustered SNPs (i.e. SNPs that are in a cluster). That's what we're interested in
         self.df_SNPs = self.df_SNPs[self.df_SNPs["Is_Clustered"] == True]
@@ -464,7 +464,7 @@ class OverlapSwitchesTable(TableSNP):
             Chromosome=("Chromosome", "first")
         ).reset_index()
 
-        #by default, all SNPs are not proximal to a switch/recombination event
+       #by default, all SNPs are not proximal to a switch/recombination event
         df_SNPs_clusters["Random_Switch_Proximal"] = False
         self.df_SNPs["Random_Switch_Proximal"] = False
         self.df_SNPs["Random_Clustered_Proximal"] = False
@@ -489,7 +489,7 @@ class OverlapSwitchesTable(TableSNP):
         
         if df_SNPs_clusters.empty:
             logging.warning(f"No clustered SNPs found in {self.name}")
-        
+            return
         else:
             #it is possible that the chromosome of the cluster is not in the switchesDict
             #if it is not, then we need to handle that

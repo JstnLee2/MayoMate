@@ -168,7 +168,7 @@ class SampleTable(TableSNP):
 
         self.output_df = pd.merge(self.df, parental_origin_db_df, how="inner", on=['Chromosome','Region','Allele'], validate="1:1")
         self.output_df = self.output_df.sort_values(by=["Chromosome","Region"],ascending=(True,True),ignore_index=True)
-        self.percent=len(self.output_df)/(len(parental_origin_db_df)/2)*100
+        self.percent=len(self.output_df)/(len(parental_origin_db_df)/2)*100 #percent of homozygous parental SNPs found in outcome
 
         self.switches_df = self.findSwitches(self.output_df, min_SNPs_switch_support=min_SNPs_switch_support)
 
@@ -336,6 +336,10 @@ class SampleTable(TableSNP):
         else:
             self.set_aneuploid(False)
             self.aneuploid_chromosomes = []
+
+        # keep the coverage values on the sample so they can be reported later (e.g. report_rtg_risk)
+        self.mean_coverage_all = mean_coverage
+        self.apsc = mean_coverage_recalc  # APSC = average per-SNP coverage (aneuploid chromosomes excluded)
 
         logging.info(f"{self.name} chr with coverage 2x different than mean (all:{mean_coverage}, anu-excluded:{mean_coverage_recalc}): {aneuploid_chromosomes}")
         if show_details:

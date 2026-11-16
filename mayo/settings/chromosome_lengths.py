@@ -1308,17 +1308,37 @@ sectors_spo13spo11_reduced = [
 ]
 
 rtg_list = [
-    "JK_92_CA",
+    "JL687_S2",
+    "JL955_S2",
+    "JL948_S2",
+    "JL800_S4",
+    "JL195_S2",
+    "JL210_S2",
+    "JL214 (R",
+    "JL223 (R",
+    "JL387_S3",
+    "JL9_R1_0",  #based off switches map only
+    "JL48_R1_", #based off switches map only
+    "MSH2_7_C", # based off switches map, but also considered heterozygous by filtering.
+    "HSMKR003",
+    "HSMKR004",
+    "HSMKR008",
+    "HSMKR009",
+    "HSMKR010",
+    "RNHK039",
+    "RNHKR056",
+
+   "JK_92_CA",
     "JK2_48_G",
     "JK2_55_C",
     "JK2_66_T",
     "JK2_97_C",
     "JK2_99_G",
     "JK2_100_",
-
+ 
     "JK3_E3_A",
     "JK3_E11_",
-
+ 
     "JK3_P1_C",
     "JK3_P3_C",
     "JK3_P4_C",
@@ -1344,13 +1364,13 @@ rtg_list = [
     "JK3_P32_",
     "JK3_P33_",
     "JK3_P34_",
-
+ 
     "JK5_41-3",
     "JK5_42-3",
     "JK5_43-3",
     "JK5_44-3",
     "JK5_45-3",
-
+ 
     "JMT41_CK", #this is a dissection of spo13 spores, real rtg?
     "JMT42_CK", #this is a dissection of spo13 spores, real rtg?
     "JMT43_CK", #this is a dissection of spo13 spores, real rtg?
@@ -1359,25 +1379,25 @@ rtg_list = [
     "JMT46_CK", #this is a dissection of spo13 spores, real rtg?
     "JMT47_CK", #this is a dissection of spo13 spores, real rtg?
     "JMT48_CK", #this is a dissection of spo13 spores, real rtg?
-
+ 
     "SD3_CKDN" ,#seems like RTG/non-sporulated
     "A4T2_CKD" ,#seems like RTG/non-sporulated
     "A4T3_CKD" ,#seems like RTG/non-sporulated
     "A4T4_CKD" ,#seems like RTG/non-sporulated
-
+ 
     "A4B1_CKD" ,#seems like RTG/non-sporulated
     "A4B2_CKD" ,#seems like RTG/non-sporulated
     "A4B3_CKD" ,#seems like RTG/non-sporulated
     "A4B4_CKD" ,#seems like RTG/non-sporulated
-    
+   
     "JMTD_4_C",
-
+ 
     "JT1_CKDN",
     "JT3_CKDN",
     "JT5_CKDN",
     "JT10_CKD",
     "JT29_CKD",
-
+ 
     "JT40_CKD",
     "JT45_CKD",
     "JT48_CKD",
@@ -1385,20 +1405,52 @@ rtg_list = [
     "JT56_CKD",
     "JT58_CKD",
     "JT59_CKD",
-
+ 
     "Mal_JK15",
     "Mal_JK18",
     "Mal_JK20",
     "Mal_JK34",
-
+ 
+    "mlh1u-2_",
+    "mlh1u-4_",
+    "mlh1u-9_",
+    "mlh1u-10",
+    "mlh1u-12",
+    "mlh1u-25",
+    "mlh1u-29",
+    "mlh1u-34",
+    "mlh1u-35",
+ 
+    "MSH2_3_C",
+    "MSH2_4_m",
+    "MSH2_6_C",
+    "MSH2_7_m",
+    "MSH2_20_",
+    "MSH2_21_",
+    "msh2e-50",
+    "msh2e-60",
+ 
+    "Pif1-16_",
+    "Pif1-20_",
+    "Pif1-6_R",
+    "Pif1-8_R",
+ 
     "Sgs-10_R",
     "Sgs-13_R",
     "Sgs-21_R",
     "Sgs-2_R1",
-
+ 
     "SgsEx-26",
     "SgsEx-36",
     "SgsEx-40",
     "SgsEx-5_"
+
+    ]
+
+# Samples with low APSC (< 30) whose coverage plot you checked and found NOT to be RTG.
+# report_rtg_risk() (notebook cell 7) stops flagging them; they stay in the analysis.
+# Paste the line printed by report_rtg_risk() here, e.g.
+#     "JL587_S3",  # APSC 10.84, ung1∆SNPlessmsh2∆ - checked 2026-11-11, OK
+rtg_checked_ok = [
 
     ]

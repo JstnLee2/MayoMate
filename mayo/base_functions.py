@@ -15,6 +15,7 @@ from .OverlapSwitchesTable import OverlapSwitchesTable
 from .SwitchesTable import SwitchesTable
 from .decorators import fancy_status, time_elapsed
 from .TableSNP import TableSNP
+from .settings.genotype_colors import genotype_palette, genotype_order, REFERENCE_GENOTYPE
 
 logger = logging.getLogger('__main__.' + __name__)
 
@@ -751,7 +752,7 @@ def drawSNPMap(
     Returns:
         None
     '''
-
+    logging.info(f"Drawing SNP map for sample {SampleTable_Object.name} with map type {map_type}")
     # style with ticks
     sns.set_style("ticks")
     sns.set_context("notebook", font_scale=1.5, rc={"lines.linewidth": 2.5})
@@ -798,7 +799,7 @@ def drawSNPMap(
         palette = {"C": "tab:blue", "G": "tab:red", 'NaN': "tab:gray", "T": "tab:gray", "A": "tab:gray"}
         sns.scatterplot(ax=ax, data=pd_df, x="Region", y="Chromosome", marker="|", s=120, alpha=1, zorder=3, linewidth=1.5, hue="Reference", palette=palette)
 
-        switches_df = SampleTable_Object.switchesTable.copy()
+        switches_df = SampleTable_Object.switchesTable.copy() 
         switches_df = switches_df[switches_df["Chromosome"] != "ref|NC_001224|"]
         switches_df = pd.concat([switches_df, starts_switches], ignore_index=True)
         switches_df = renameChrToRoman(switches_df, "Chromosome")
@@ -839,7 +840,7 @@ def drawSNPMap(
         markers = {"parent_1": 3, "parent_2": 3}
 
         sns.scatterplot(ax=ax, data=pd_df_heterozygous, x="Region", y="Chromosome", color="tab:gray", marker=3, s=60, alpha=0.6,zorder=-1, linewidth=0.75)
-        sns.scatterplot(ax=ax, data=pd_df, x="Region", y="Chromosome", hue="Parent", palette=palette, style="Parent", markers=markers, s=70, alpha=0.65,zorder=-1, linewidth=0.75)
+        sns.scatterplot(ax=ax, data=pd_df, x="Region", y="Chromosome", hue="Parent", palette=palette, style="Parent", markers=markers, s=70, alpha=0.7,zorder=-1, linewidth=0.75)
 
         #second deal with the SNVs (A3A)
         label_dict = {
@@ -986,6 +987,8 @@ def drawSNPMap(
 
         #relable the legend texts according to the legend_order
 
+        # legend relabeling loop disabled (as in the notebook's working copy of drawSNPMap)
+        """
         while True:
             try:
                 by_label = {label_dict.get(key): by_label[key] for key in legend_order}
@@ -1000,6 +1003,7 @@ def drawSNPMap(
                 except Exception as e:
                     logging.warning(f"Cound not relabel legend. {e}.")
                     break
+        """
 
         ax.legend(by_label.values(), by_label.keys(), fontsize=10, loc='lower right', bbox_to_anchor=(0.98, 0.05), title=None)
         
@@ -1019,8 +1023,7 @@ def drawSNPMap(
                 legend_texts[i].set_text(new_label)
     
     if saveMap:
-        if not os.path.exists(f'figures/tests/{map_type}'):
-            os.makedirs(f'figures/tests/{map_type}')
+        os.makedirs(f'figures/{map_type}', exist_ok=True)
         plt.savefig(f'figures/{map_type}/{title}_{map_type}{save_name_suffix}.png', transparent=False, dpi=600)
 
     if showMap:
@@ -1305,6 +1308,9 @@ def findAssociatedClusters(
 
         logging.debug(f"Finding random associated clusters in {sample.name}... (generation {generation})")
         sample.findRandomClusters(window_size)
+        if sample.df_SNPs.empty:
+            logging.warning(f"No clustered SNPs found in {sample.name}")
+            continue                ##################################################################################
 
         if exclude_low_SNP_density_regions:
             sample.markLowSNPDensityClusters(lowDensityMap, window_size=500)
@@ -1669,14 +1675,18 @@ def drawContextA3A(
 
     context_list_all_both = context_list_all_C + context_list_all_G_rev_compl
 
-    if save:
-        drawGenomicContext(context_list_all_C, save_path=f'figures/contextFigs/context_C_all{save_name_suffix}.png', show=show)
-        drawGenomicContext(context_list_all_G, save_path=f'figures/contextFigs/context_G_all{save_name_suffix}.png', show=show)
-        drawGenomicContext(context_list_all_both, save_path=f'figures/contextFigs/context_both_all{save_name_suffix}.png', show=show)
-    else:
-        drawGenomicContext(context_list_all_C, show=show)
-        drawGenomicContext(context_list_all_G, show=show)
-        drawGenomicContext(context_list_all_both, show=show)
+    # BioAid's drawGenomicContext crashes on an empty list ("'Series' object has no attribute 'columns'"),
+    # which happens when no samples in focus_set are present in sample_list or they have no C/G mutations.
+    for kind, context_list in [("C", context_list_all_C), ("G", context_list_all_G), ("both", context_list_all_both)]:
+        if len(context_list) == 0:
+            msg = f"No {kind} mutations found for '{save_name_suffix}' (no matching samples or mutations). Skipping combined context plot."
+            logging.warning(msg)
+            print(msg)
+            continue
+        if save:
+            drawGenomicContext(context_list, save_path=f'figures/contextFigs/context_{kind}_all{save_name_suffix}.png', show=show)
+        else:
+            drawGenomicContext(context_list, show=show)
 
 def removeA3AmotifSNPs(
         df: pd.DataFrame, 
@@ -3054,21 +3064,38 @@ def compute_and_add_JT_clusters(
         samples_SNVs, 
         pvals_to_test, 
         max_distance_between_mutations = 10000, 
-        min_cluster_mutations = 3):
-    
+        min_cluster_mutations = 3,
+        use_cache = True):
+    '''use_cache: reuse a sample's clusters when its mutations (Chromosome, Region) and the
+    parameters are identical to a previous run (see mayo/sample_cache.py). If filtering changes
+    a sample's mutations, its clusters are recomputed automatically.'''
+
     from .nbinom import analyzeSampleForMutationClusters
+    from .sample_cache import StageCache, make_key, df_fingerprint, CACHE_VERSION
+
+    cache = StageCache("jt_clusters")
+    n_cached = n_computed = 0
 
     for pval in pvals_to_test:
         logging.info(f"Testing pval = {pval}")
         pval_master_df = pd.DataFrame()
         for sample in samples_SNVs:
             df_mutations = sample.df.copy()[["Chromosome", "Region"]]
-            new_clusters = analyzeSampleForMutationClusters(
-                df_mutations,
-                min_p_value = pval,
-                max_distance_between_mutations = max_distance_between_mutations,
-                min_cluster_mutations = min_cluster_mutations)
-            
+            key = make_key(CACHE_VERSION, "jt", df_fingerprint(df_mutations), pval,
+                           max_distance_between_mutations, min_cluster_mutations)
+            new_clusters = cache.get(key, key, name=sample.name) if use_cache else None
+            if new_clusters is not None:
+                n_cached += 1
+            else:
+                new_clusters = analyzeSampleForMutationClusters(
+                    df_mutations,
+                    min_p_value = pval,
+                    max_distance_between_mutations = max_distance_between_mutations,
+                    min_cluster_mutations = min_cluster_mutations)
+                n_computed += 1
+                if use_cache:
+                    cache.put(key, key, new_clusters)
+
             sample.cluster_dict_JT.update({pval: new_clusters})
             new_clusters["sample"] = sample.name
             new_clusters["all_mutations"] = len(sample.df)
@@ -3084,6 +3111,10 @@ def compute_and_add_JT_clusters(
         pval_master_df["Dataset_Cluster_ID"] = pval_master_df["Dataset_Cluster_ID"] + 1
 
         pval_master_df.to_csv(f"data/new_clusters/mutation_clusters/mutation_clusters_pval_{str(pval)}.tsv", sep="\t", index=False)
+
+    msg = f"[cache:jt_clusters] {n_cached} sample/p-value result(s) loaded from cache, {n_computed} computed"
+    print(msg)
+    logging.info(msg)
 
 def add_PMACD_clusters(
         samples_SNVs, 
@@ -3415,7 +3446,10 @@ def get_samples_with_genotype(query_genotype: str, genotype_dict: dict) -> list:
     list: A list of sample names with the given genotype.
     """
     genotype_dict_inv = invert_dict(genotype_dict)
-    samples_with_genotype = sum([genotype_dict_inv[i] for i in query_genotype.split("+")], [])
+    missing = [i for i in query_genotype.split("+") if i not in genotype_dict_inv]
+    if missing:
+        logging.warning(f"get_samples_with_genotype: no samples with genotype {missing} in genotype_dict; skipping them.")
+    samples_with_genotype = sum([genotype_dict_inv.get(i, []) for i in query_genotype.split("+")], [])
 
     return samples_with_genotype
 
@@ -3489,7 +3523,11 @@ def pull_mutations_from_sample_recev_dict(ev_dict: dict, df, window_size=10000) 
             #create event_id column
             event_ID = f"{chromosome}_{position}"
             df_position["RecEv_ID"] = event_ID
-            df_out = pd.concat([df_out, df_position], ignore_index=True)
+            # safe-concat: only concat if df_position is a non-empty DataFrame
+            if isinstance(df_position, pd.DataFrame) and not df_position.empty:
+                df_out = pd.concat([df_out, df_position], ignore_index=True)
+            else:
+                logging.debug("Skipping concat: df_position is empty or not a DataFrame")
 
     return df_out
 
@@ -3723,7 +3761,9 @@ def plot_SNVs_around_rec_ev_meta(
     plt.figure(figsize=(16, 10))
     sns.set_style("whitegrid")
     #sns.histplot(data=meta_master_relative_GC_CO_df, x="Region", hue="genotype", kde=True, bins=100, kde_kws={'bw_adjust': .3})
-    sns.kdeplot(data=meta_master_relative_GC_CO_df, x="Region", hue="genotype", fill=False, common_norm=False, bw_adjust=.5)
+    _genotypes = genotype_order(meta_master_relative_GC_CO_df["genotype"].unique())
+    sns.kdeplot(data=meta_master_relative_GC_CO_df, x="Region", hue="genotype", fill=False, common_norm=False, bw_adjust=.5,
+                palette=genotype_palette(_genotypes), hue_order=_genotypes)
     plt.axvline(x=0, color="black", linestyle="--", linewidth=1)
     #cut the plot at -12 and 12
     plt.xlim(-12, 12)
@@ -3744,7 +3784,7 @@ def calculateClusterStatistics(
         samples_SNVs: list[OverlapSwitchesTable],
         cluster_kind: Literal["JT", "PMACD"] = "JT",
         focus_set: list = None,
-        pval_list = [0.01, 0.001, 0.0001, 0.00001, 0.000001]
+        pval_list = [0.01, 0.001, 0.0001, 0.00001, 0.000001],
         ) -> tuple[List, List]:
     """
     Calculates some cluster statistics for a given set of samples_SNVs.
@@ -3767,7 +3807,7 @@ def calculateClusterStatistics(
         output_ratios_list = []
 
         for sample in samples_SNVs:
-
+            logging.info(f"Calculating cluster statistics for sample {sample.name}.")
             if focus_set is not None and sample.name not in focus_set:
                 continue
 
@@ -3783,7 +3823,11 @@ def calculateClusterStatistics(
                 total_ssDNA = sample.totalssDNA_PMACD_dict[pval]
 
             sample_scattered_mutations = sample_total_mutation_count - sample_total_clustered_mutations
-            clustered_scattered_ratio = (sample_total_clustered_mutations / (sample_scattered_mutations + sample_total_clustered_mutations)) * 100
+            try:
+                clustered_scattered_ratio = (sample_total_clustered_mutations / (sample_scattered_mutations + sample_total_clustered_mutations)) * 100
+            except ZeroDivisionError:
+                logging.info(f"ZeroDivisionError: sample {sample.name} has no mutations. Setting clustered_scattered_ratio to 0.")
+                clustered_scattered_ratio = 0
 
             output_ratios_list.append(clustered_scattered_ratio)
             clust_mut_vs_total_ssdna_list.append([pval, sample_total_clustered_mutations, total_ssDNA])
@@ -3809,6 +3853,7 @@ def get_proportion_of_A3A_mutations(samples_SNVs: list[OverlapSwitchesTable]) ->
         total_mutations = len(sample.df)
         C_to_T = len(sample.df[(sample.df["Reference"] == "C") & (sample.df["Allele"] == "T")])
         G_to_A = len(sample.df[(sample.df["Reference"] == "G") & (sample.df["Allele"] == "A")])
+        logging.info(f"Sample {sample.name} has {total_mutations} total mutations, {C_to_T} C->T mutations, and {G_to_A} G->A mutations.")
         try:
             total_a3a = C_to_T + G_to_A
             a3a_fraction = total_a3a / total_mutations
@@ -3862,6 +3907,9 @@ def plot_proportion_A3A_mutations(
         'sgs1∆C': 'ung1∆\nsgs1∆C',
         'pol32∆': 'ung1∆\npol32∆',
         'spo13∆': 'ung1∆\nspo13∆',
+        'ung1∆': 'ung1∆\n',
+        'ung1∆fun30∆': 'ung1∆\nfun30∆',
+        'ung1∆mph1∆': 'ung1∆\nmph1∆',
     }
 
     #rename genotypes for plotting so they fit on the x-axis
@@ -3907,7 +3955,7 @@ def bin_rec_relative_mutations(
         region: tuple = (-12, 12),
         bins: int = 24,
         bin_size: int = 1,
-        slide_size: float = 1
+        slide_size: float = 1.0,
         ) -> pd.DataFrame:
     """
     Bins the mutations relative to recombination events into specified regions with sliding bins.
@@ -3921,14 +3969,14 @@ def bin_rec_relative_mutations(
     Returns:
     pd.DataFrame: DataFrame with the mutations binned into the specified regions.
     """
+    
     bottom_region = region[0]
     top_region = region[1]
     bin_width = bin_size
     slide_width = slide_size
     print(f"Analysis region: {bottom_region} to {top_region} kb, bin width: {bin_width} kb, slide width: {slide_width} kb")
-
+    
     df_trimmed = constrain_to_region(df, region)
-
     df_trimmed = df_trimmed[["genotype", "Region", "Reference", "norm_count"]]
 
     bins = []
@@ -3956,7 +4004,9 @@ def normalize_rec_relative_bins_to_wt(df, normalize_to="ung1∆"):
     Returns:
     pd.DataFrame: DataFrame with the counts of mutations in each bin normalized to the specified genotype.
     """
-    df_counts = df.groupby(["genotype", "Region"]).sum() #sum up the norm_count values for each Region bin
+    # sum only norm_count; pandas>=2 no longer drops string columns (e.g. "Reference") in .sum(),
+    # which would concatenate them and break the division below
+    df_counts = df.groupby(["genotype", "Region"], observed=False)[["norm_count"]].sum() #sum up the norm_count values for each Region bin
     df_counts = df_counts.unstack(level=0) #transform the counts into a DataFrame, with the bins as columns
     df_counts = df_counts.fillna(0)
 
@@ -4138,7 +4188,7 @@ def get_mutations_around_rec_ev(
     master_relative_CO_df = pd.DataFrame()
 
     for sample in samples_SNVs:
-        #print(f"Processing {sample.name}...")
+        print(f"Processing {sample.name}...")
 
         GC_dict = sample.GC_dict.copy()
         CO_dict = sample.CO_dict.copy()
@@ -4178,8 +4228,12 @@ def get_mutations_around_rec_ev(
         
         #here could normalize by the number of A3A motifs available?
 
-        master_relative_GC_df = pd.concat([master_relative_GC_df, relative_mut_GC_df], ignore_index=True)
-        master_relative_CO_df = pd.concat([master_relative_CO_df, relative_mut_CO_df], ignore_index=True)
+         # only concat if the frame exists and is non-empty
+        if isinstance(relative_mut_GC_df, pd.DataFrame) and not relative_mut_GC_df.empty:
+            master_relative_GC_df = pd.concat([master_relative_GC_df, relative_mut_GC_df], ignore_index=True)
+        if isinstance(relative_mut_CO_df, pd.DataFrame) and not relative_mut_CO_df.empty:
+            master_relative_CO_df = pd.concat([master_relative_CO_df, relative_mut_CO_df], ignore_index=True)
+        
         
         total_relative_mutations = len(master_relative_GC_df) + len(master_relative_CO_df)
 
@@ -4200,7 +4254,23 @@ def get_mutations_around_rec_ev(
     master_relative_GC_df["event"] = "GC"
     master_relative_CO_df["event"] = "CO"
 
-    master_relative_GC_CO_df = pd.concat([master_relative_GC_df, master_relative_CO_df], ignore_index=True)
+    # safe-concat: only concat non-empty DataFrames
+    frames_to_concat = []
+    if isinstance(master_relative_GC_df, pd.DataFrame) and not master_relative_GC_df.empty:
+        frames_to_concat.append(master_relative_GC_df)
+    else:
+        logging.debug("master_relative_GC_df is empty or not a DataFrame; skipping concat.")
+
+    if isinstance(master_relative_CO_df, pd.DataFrame) and not master_relative_CO_df.empty:
+        frames_to_concat.append(master_relative_CO_df)
+    else:
+        logging.debug("master_relative_CO_df is empty or not a DataFrame; skipping concat.")
+
+    if frames_to_concat:
+        master_relative_GC_CO_df = pd.concat(frames_to_concat, ignore_index=True)
+    else:
+        master_relative_GC_CO_df = pd.DataFrame()
+
     master_relative_GC_CO_df = master_relative_GC_CO_df[~master_relative_GC_CO_df["Reference"].isin(["A", "T"])]
     master_relative_GC_CO_df = master_relative_GC_CO_df[~master_relative_GC_CO_df["Allele"].isin(["C", "G"])]
     master_relative_GC_CO_df = master_relative_GC_CO_df.drop(columns=["Chromosome", "Allele", "Coverage", "Frequency"])
@@ -4250,8 +4320,10 @@ def plot_SNVs_around_rec_ev_kde_meta(
         cut=0, 
         fill=False, 
         common_norm=False, 
-        common_grid=True, 
-        bw_adjust=.5)
+        common_grid=True,
+        bw_adjust=.5,
+        palette=genotype_palette(genotype_order(meta_master_relative_GC_CO_df["genotype"].unique())),
+        hue_order=genotype_order(meta_master_relative_GC_CO_df["genotype"].unique()))
     plt.axvline(x=0, color="black", linestyle="--", linewidth=1)
     #cut the plot at -12 and 12
     plt.xlim(-12, 12)
@@ -4380,7 +4452,7 @@ def plot_GC_CO_distribution_by_genotype(
     """    
     import statistics
 
-    GC_numbers, CO_numbers = get_GC_CO_numbers(samples_SNVs, query_genotypes=query_genotypes, min_percent=80)
+    GC_numbers, CO_numbers = get_GC_CO_numbers(samples_SNVs, query_genotypes=query_genotypes, min_percent=70)
 
     #combine the GC and CO numbers into one dataframe for plotting
     GC_CO_df = pd.DataFrame({"Event": ["GC"] * len(GC_numbers) + ["CO"] * len(CO_numbers), "Number": GC_numbers + CO_numbers})
@@ -4588,8 +4660,8 @@ def plot_rec_events_for_all_chr(
             
             df_all_rec_events_chr_event = df_all_rec_events_chr[df_all_rec_events_chr["Type"] == event_type]
 
-            print(f"total_{event_type}s on {chromosome_to_plot}: {len(df_all_rec_events_chr_event)}")
-            print(f"Most common {event_type}s on {chromosome_to_plot}:")
+            logging.info(f"total_{event_type}s on {chromosome_to_plot}: {len(df_all_rec_events_chr_event)}")
+            logging.info(f"Most common {event_type}s on {chromosome_to_plot}:")
             print(df_all_rec_events_chr_event["Region"].value_counts().head(5))
             print()
 
@@ -5082,8 +5154,11 @@ def aggregateSectorsClusters(
         }, inplace=True)
 
     #if total_length is 0, set total_clusters and total_clust_mutations to 0
-    cluster_table_with_missing_totals["Total_clusters"] = cluster_table_with_missing_totals.apply(lambda x: 0 if x["Total_length"] == 0 else x["Total_clusters"], axis=1)
-    cluster_table_with_missing_totals["Total_clust_mutations"] = cluster_table_with_missing_totals.apply(lambda x: 0 if x["Total_length"] == 0 else x["Total_clust_mutations"], axis=1)
+    # vectorized (instead of .apply(axis=1)) so it also works when the table is empty,
+    # e.g. when none of the sectors/tetrad samples are present in the dataset
+    zero_length = cluster_table_with_missing_totals["Total_length"] == 0
+    cluster_table_with_missing_totals.loc[zero_length, "Total_clusters"] = 0
+    cluster_table_with_missing_totals.loc[zero_length, "Total_clust_mutations"] = 0
     
     logging.info(cluster_table_with_missing_totals)
     print(cluster_table_with_missing_totals)
@@ -6561,7 +6636,7 @@ def plot_normalized_rec_A3A(
         region = (-12, 12), #in kb, -8 to 8 or -12 to 12
         bins = 24, # 16 or 24
         poly_order = 3, # 1 or 3
-        genotypes_include = ["ung1∆", "pol32∆", "exo1-nd", "exo1-ndpol32∆"],
+        genotypes_include = ["ung1∆", "ung1∆fun30∆", "ung1∆mph1∆", "ung1∆msh2∆", "ung1∆mlh1∆", "ung1∆rnh1∆","ung1∆rnh201∆", "ung1∆rnh1∆rnh201∆", "ung1∆ 37C", "ung1∆mlh2∆"],
         save_path: str | None = "figures/normalized_rec_A3A.png",
         show: bool = True,
         normalize_to: str = "ung1∆",
@@ -6571,12 +6646,13 @@ def plot_normalized_rec_A3A(
     
     from scipy.stats import linregress
     import numpy as np
-
+    print("working, point1")
     meta_master_relative_GC_CO_df_filtered = bin_rec_relative_mutations(meta_master_relative_GC_CO_df, region, bins=bins)
     df_norm = normalize_rec_relative_bins_to_wt(meta_master_relative_GC_CO_df_filtered, normalize_to=normalize_to)
-
+    
     print("Dataframe with normalized counts to ung1∆ for plotting:")
     print(df_norm)
+    print("working, point2")
 
     df_norm = df_norm[["Region_bin"] + genotypes_include] #only keep the genotypes we want to plot
 
@@ -6587,39 +6663,19 @@ def plot_normalized_rec_A3A(
         value_vars=genotypes_include, 
         var_name="genotype", 
         value_name="norm_count")
-    
+    print("working, point3")
     #apply log2 to the normalized counts
     df_counts_melted["norm_count"] = np.log2(df_counts_melted["norm_count"])
+    print(f" This is the type of df_counts_melted, norm_counts: {df_counts_melted['norm_count'].dtype}")
     #if there are values that are inf or nan, remove them
     df_counts_melted = df_counts_melted.replace([np.inf, -np.inf], np.nan).dropna()
+    print("Dataframe melted for plotting: working point4")
+    print(f"df_counts_melted head:\n{df_counts_melted.head()}")
 
-
-    if palette is None:
-        palette = {
-            "ung1∆": "tab:blue",
-            "ung1∆_clustered": "tab:blue",
-            "ung1∆_scattered": "tab:cyan",
-
-            "ung1∆NAT": "tab:orange",
-            "ung1∆NAT_clustered": "tab:orange",
-            "ung1∆NAT_scattered": "#FFA343",
-
-            "pol32∆": "tab:green", 
-            "pol32∆_clustered": "tab:green",
-            "pol32∆_scattered": "tab:olive",
-
-            "exo1-nd": "tab:red",
-            "exo1-nd_clustered": "tab:red",
-            "exo1-nd_scattered": "tab:pink",
-
-            "exo1-ndpol32∆": "tab:purple",
-            "exo1-ndpol32∆_clustered": "tab:purple",
-            "exo1-ndpol32∆_scattered": "tab:gray",
-
-            "sgs1∆C": "tab:pink",
-            "exo1-ndsgs1∆C": "tab:gray",
-            
-        }
+    # colors come from mayo/settings/genotype_colors.py (one place for all plots);
+    # a palette passed in by the caller overrides them for the genotypes it lists
+    plot_genotypes = df_counts_melted["genotype"].unique()
+    palette = {**genotype_palette(plot_genotypes), **(dict(palette) if palette is not None else {})}
 
     sns.set_context("poster")
     plt.figure(figsize=(16, 8))
@@ -6644,7 +6700,7 @@ def plot_normalized_rec_A3A(
 
         p_value_F = test_third_order_poly_fit_F_test(df_subset)
         print(f'{genotype} poly line p-value: {p_value_F}')
-
+    print("working, point5")
     if mutation_type is not None:
         plt.title(f"{mutation_type.capitalize()} mutations relative to recombining end", fontsize=30, fontweight='bold')
     else:
@@ -6658,7 +6714,7 @@ def plot_normalized_rec_A3A(
     # Create custom legend handles with alpha set to 0
     handles = []
     labels = []
-
+    print("working, point6")
     for genotype in df_counts_melted["genotype"].unique():
         color = palette[genotype]
         handle = mlines.Line2D([], [], color=color, label=genotype, marker='o', linestyle='None', markersize=10)
@@ -6893,3 +6949,117 @@ def create_similarity_matrix(sample_list):
     return similarity_matrix
 
 
+
+
+def report_rtg_risk(
+        samples_parental_SNPs: list | None = None,
+        genotype_dict: dict | None = None,
+        apsc_threshold: float = 30,
+        coverage_fig_dir: str = "figures/coverage",
+        out_path: str = "outputs/rtg_risk_report.csv",
+        ) -> pd.DataFrame:
+    """
+    List samples at risk of being Return-To-Growth (RTG), based on APSC (average per-SNP coverage).
+
+    Samples with APSC < apsc_threshold are flagged "CHECK": open their coverage plot
+    (column 'coverage_plot') and add them to mayo/settings/chromosome_lengths.py:
+    to rtg_list if they are RTG (removed from analysis), or to rtg_checked_ok if they
+    are fine (kept, and not flagged again).
+
+    APSC is taken from the sample objects when available (set by performHeterozygosityAndPloidyAnalysis),
+    otherwise it is read from the coverage plot file names in coverage_fig_dir
+    ("<sample>_(APSC-<value>)_SNP_coverage_map.png"), so the report also works without rerunning anything.
+
+    Parameters:
+        samples_parental_SNPs: list of SampleTable objects (optional).
+        genotype_dict: sample name -> genotype (optional, adds a genotype column).
+        apsc_threshold: APSC below this value is flagged. Default 30.
+        coverage_fig_dir: folder with the coverage plots.
+        out_path: CSV to write (sorted from lowest APSC).
+
+    Returns:
+        pd.DataFrame with one row per sample.
+    """
+    import re
+    from .settings import rtg_list, rtg_checked_ok
+
+    rows = {}
+
+    # 1) coverage plot file names (always available if plots were saved)
+    pattern = re.compile(r"^(?P<sample>.+)_\(APSC-(?P<apsc>[\d.]+)\)_SNP_coverage_map\.png$")
+    if os.path.isdir(coverage_fig_dir):
+        for fname in os.listdir(coverage_fig_dir):
+            m = pattern.match(fname)
+            if not m:
+                continue
+            path = os.path.join(coverage_fig_dir, fname)
+            sample, mtime = m.group("sample"), os.path.getmtime(path)
+            previous = rows.get(sample)
+            if previous is None or mtime > previous["_mtime"]:
+                rows[sample] = {
+                    "sample": sample,
+                    "APSC": float(m.group("apsc")),
+                    "APSC_source": "plot file name",
+                    "coverage_plot": path,
+                    "n_coverage_plots": (previous["n_coverage_plots"] + 1) if previous else 1,
+                    "_mtime": mtime,
+                }
+            else:
+                previous["n_coverage_plots"] += 1
+
+    # 2) values stored on the sample objects (most up to date) override file names
+    for sample in samples_parental_SNPs or []:
+        apsc = getattr(sample, "apsc", None)
+        row = rows.setdefault(sample.name, {"sample": sample.name, "coverage_plot": None, "n_coverage_plots": 0, "_mtime": 0})
+        if apsc is not None:
+            row["APSC"] = float(apsc)
+            row["APSC_source"] = "sample object"
+            expected_plot = os.path.join(coverage_fig_dir, f"{sample.name}_(APSC-{round(apsc, 2)})_SNP_coverage_map.png")
+            if os.path.exists(expected_plot):
+                row["coverage_plot"] = expected_plot
+        row["aneuploid_chromosomes"] = ", ".join(getattr(sample, "aneuploid_chromosomes", None) or [])
+        row["heterozygous_chromosomes"] = ", ".join(getattr(sample, "heterozygous_chromosomes", None) or [])
+
+    if not rows:
+        logging.warning(f"report_rtg_risk: no APSC values found (no sample objects with .apsc and no plots in {coverage_fig_dir})")
+        return pd.DataFrame()
+
+    df = pd.DataFrame(rows.values()).drop(columns=["_mtime"])
+    if genotype_dict is not None:
+        df.insert(1, "genotype", df["sample"].map(genotype_dict).fillna("not in genotype_dict"))
+    df["in_rtg_list"] = df["sample"].isin(rtg_list)
+    df["checked_ok"] = df["sample"].isin(rtg_checked_ok)
+    df["at_risk"] = df["APSC"] < apsc_threshold
+    df["action"] = np.select(
+        [df["at_risk"] & df["in_rtg_list"],
+         df["at_risk"] & df["checked_ok"],
+         df["at_risk"]],
+        ["already in rtg_list", "checked OK (rtg_checked_ok)", "CHECK coverage plot"],
+        default="ok")
+    both = df[df["in_rtg_list"] & df["checked_ok"]]
+    if len(both):
+        logging.warning(f"In both rtg_list and rtg_checked_ok (rtg_list wins, sample is removed): {', '.join(both['sample'])}")
+        print(f"Warning: in both rtg_list and rtg_checked_ok (rtg_list wins, sample is removed): {', '.join(both['sample'])}")
+    df = df.sort_values("APSC").reset_index(drop=True)
+
+    os.makedirs(os.path.dirname(out_path) or ".", exist_ok=True)
+    df.to_csv(out_path, index=False, encoding="utf-8")
+
+    to_check = df[df["action"] == "CHECK coverage plot"]
+    msg = (f"RTG risk report: {len(df)} samples, {int(df['at_risk'].sum())} with APSC < {apsc_threshold}: "
+           f"{int((df['action'] == 'already in rtg_list').sum())} in rtg_list, "
+           f"{int((df['action'] == 'checked OK (rtg_checked_ok)').sum())} checked OK, "
+           f"{len(to_check)} still to check -> {out_path}")
+    logging.info(msg)
+    print(msg)
+    if len(to_check):
+        print("\nSamples to check. Open each coverage plot, then copy the line into mayo/settings/chromosome_lengths.py:"
+              "\n  RTG     -> rtg_list        (sample is removed from the analysis)"
+              "\n  not RTG -> rtg_checked_ok  (sample is kept and not flagged again)")
+        for _, r in to_check.iterrows():
+            genotype = f", {r['genotype']}" if "genotype" in r else ""
+            print(f'    "{r["sample"]}",  # APSC {r["APSC"]:.2f}{genotype}')
+    dup = df[df["n_coverage_plots"] > 1]
+    if len(dup):
+        print(f"\nNote: {len(dup)} samples have more than one coverage plot (older runs); the newest was used: {', '.join(dup['sample'])}")
+    return df

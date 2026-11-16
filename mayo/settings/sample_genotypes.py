@@ -167,24 +167,24 @@ genotype_dict = {
         "JL366_S3": "ung1∆ 37C_A3A",
         "JL367_S3": "ung1∆ 37C_A3A",
         "JL368_S3": "ung1∆ 37C_A3A",
-        "JL370_S3": "ung1∆ 37C_EV",
-        "JL371_S3": "ung1∆ 37C_EV",
-        "JL372_S3": "ung1∆ 37C_EV",
-        "JL373_S3": "ung1∆ 37C_EV",
-        "JL374_S3": "ung1∆ 37C_EV",
-        "JL376_S3": "ung1∆ 37C_EV",
-        "JL377_S3": "ung1∆ 37C_EV",
-        "JL380_S2": "ung1∆ 37C_EV",
-        "JL382_S2": "ung1∆ 37C_EV",
-        "JL383_S3": "ung1∆ 37C_EV",
-        "JL384_S3": "ung1∆ 37C_EV",
-        "JL387_S3": "ung1∆ 37C_EV",
-        "JL389_S3": "ung1∆ 37C_EV",
-        "JL391_S3": "ung1∆ 37C_EV",
-        "JL392_S3": "ung1∆ 37C_EV",
-        "JL393_S3": "ung1∆ 37C_EV",
-        "JL394_S3": "ung1∆ 37C_EV",
-        "JL395_S3": "ung1∆ 37C_EV",
+        # "JL370_S3": "ung1∆ 37C_EV",
+        # "JL371_S3": "ung1∆ 37C_EV",
+        # "JL372_S3": "ung1∆ 37C_EV",
+        # "JL373_S3": "ung1∆ 37C_EV",
+        # "JL374_S3": "ung1∆ 37C_EV",
+        # "JL376_S3": "ung1∆ 37C_EV",
+        # "JL377_S3": "ung1∆ 37C_EV",
+        # "JL380_S2": "ung1∆ 37C_EV",
+        # "JL382_S2": "ung1∆ 37C_EV",
+        # "JL383_S3": "ung1∆ 37C_EV",
+        # "JL384_S3": "ung1∆ 37C_EV",
+        # "JL387_S3": "ung1∆ 37C_EV",
+        # "JL389_S3": "ung1∆ 37C_EV",
+        # "JL391_S3": "ung1∆ 37C_EV",
+        # "JL392_S3": "ung1∆ 37C_EV",
+        # "JL393_S3": "ung1∆ 37C_EV",
+        # "JL394_S3": "ung1∆ 37C_EV",
+        # "JL395_S3": "ung1∆ 37C_EV",
 
         "JL400_S1": "ung1∆pol3_5DV",
         "JL401_S1": "ung1∆pol3_5DV",
@@ -218,6 +218,7 @@ genotype_dict = {
         "JL529_S5": "ung1∆mlh1∆",
         "JL530_S5": "ung1∆mlh1∆",
         "JL531_S1": "ung1∆mlh1∆",
+        "JL531_S2": "ung1∆mlh1∆", #Output from own script, testing to see how different it is.
         "JL532_S1": "ung1∆mlh1∆",
         "JL533_S1": "ung1∆mlh1∆",
         "JL534_S1": "ung1∆mlh1∆",
@@ -229,6 +230,68 @@ genotype_dict = {
         "JL542_S1": "ung1∆mlh1∆",
         "JL544_S1": "ung1∆mlh1∆",
 
+        "JL545_S3": "ung1∆mlh1∆",
+        "JL546_S3": "ung1∆mlh1∆",
+        "JL547_S3": "ung1∆mlh1∆",
+        "JL548_S3": "ung1∆mlh1∆",
+        "JL549_S3": "ung1∆mlh1∆",
+        "JL550_S3": "ung1∆mlh1∆",
+        "JL551_S3": "ung1∆mlh1∆",
+        "JL552_S3": "ung1∆mlh1∆",
+        "JL553_S3": "ung1∆mlh1∆",
+        "JL555_S3": "ung1∆mlh1∆",
+        
+        "JL581_S3": "ung1∆SNPlessmsh2∆",
+        "JL582_S3": "ung1∆SNPlessmsh2∆",
+        "JL583_S3": "ung1∆SNPlessmsh2∆",
+        "JL584_S3": "ung1∆SNPlessmsh2∆",
+        "JL585_S3": "ung1∆SNPlessmsh2∆",
+        "JL586_S3": "ung1∆SNPlessmsh2∆",
+        "JL587_S3": "ung1∆SNPlessmsh2∆",
+        "JL590_S3": "ung1∆SNPlessmsh2∆",
+        "JL591_S3": "ung1∆SNPlessmsh2∆",
+        "JL592_S3": "ung1∆SNPlessmsh2∆",
+        "JL593_S3": "ung1∆SNPlessmsh2∆",
+        "JL595_S3": "ung1∆SNPlessmsh2∆",
+        "JL596_S3": "ung1∆SNPlessmsh2∆",
+        "JL597_S3": "ung1∆SNPlessmsh2∆",
+        "JL598_S3": "ung1∆SNPlessmsh2∆",
+        "JL599_S3": "ung1∆SNPlessmsh2∆",
+        "JL601_S3": "ung1∆SNPlessmsh2∆",
+        "JL604_S3": "ung1∆SNPlessmsh2∆",
+        "JL607_S3": "ung1∆SNPlessmsh2∆",
+        "JL609_S3": "ung1∆SNPlessmsh2∆",
+        "JL610_S3": "ung1∆SNPlessmsh2∆",
+        "JL611_S3": "ung1∆SNPlessmsh2∆",
+        "JL613_S3": "ung1∆SNPlessmsh2∆",
+        "JL614_S3": "ung1∆SNPlessmsh2∆",
+        "JL616_S3": "ung1∆SNPlessmsh2∆",
+        "JL619_S3": "ung1∆SNPlessmsh2∆",
+        "JL620_S3": "ung1∆SNPlessmsh2∆",
+        "JL621_S3": "ung1∆SNPlessmsh2∆",
+        "JL622_S3": "ung1∆SNPlessmsh2∆",
+        "JL624_S3": "ung1∆SNPlessmsh2∆",
+        "JL626_S3": "ung1∆SNPlessmsh2∆",
+        "JL627_S3": "ung1∆SNPlessmsh2∆",
+        "JL629_S3": "ung1∆SNPlessmsh2∆",
+        "JL630_S3": "ung1∆SNPlessmsh2∆",
+        "JL633_S3": "ung1∆SNPlessmsh2∆",
+        "JL634_S3": "ung1∆SNPlessmsh2∆",
+        "JL635_S3": "ung1∆SNPlessmsh2∆",
+
+        "JL669_S3": "ung1∆msh3∆",
+        "JL670_S3": "ung1∆msh3∆",
+        "JL671_S3": "ung1∆msh3∆",
+        "JL674_S3": "ung1∆msh3∆",
+        "JL675_S3": "ung1∆msh3∆",
+        "JL676_S3": "ung1∆msh3∆",
+        "JL678_S3": "ung1∆msh3∆",
+        "JL679_S3": "ung1∆msh3∆",
+        "JL683_S3": "ung1∆msh3∆",
+        "JL687_S3": "ung1∆msh2∆",
+        "JL690_S3": "ung1∆msh3∆",
+        "JL692_S3": "ung1∆msh3∆",
+        "JL694_S3": "ung1∆msh3∆",
         "JL642_S5": "ung1∆msh3∆",
         "JL646_S5": "ung1∆msh3∆",
         "JL647_S5": "ung1∆msh3∆",
@@ -245,232 +308,352 @@ genotype_dict = {
         "JL663_S1": "ung1∆msh3∆",
         "JL664_S1": "ung1∆msh3∆",
         "JL665_S1": "ung1∆msh3∆",
-                
+
+        "JL701_S2": "ung1∆pol3_01",
+        "JL703_S2": "ung1∆pol3_01",
+        "JL704_S2": "ung1∆pol3_01",
+        "JL705_S2": "ung1∆pol3_01",
+        "JL706_S2": "ung1∆pol3_01",
+        "JL707_S2": "ung1∆pol3_01",
+        "JL708_S2": "ung1∆pol3_01",
+        "JL709_S2": "ung1∆pol3_01",
+        "JL710_S2": "ung1∆pol3_01",
+        "JL713_S2": "ung1∆pol3_01",
+        "JL716_S2": "ung1∆pol3_01",
+        "JL737_S2": "ung1∆pol3_01",
+        "JL740_S2": "ung1∆pol3_01",
+        "JL744_S2": "ung1∆pol3_01",
+        "JL745_S2": "ung1∆pol3_01",
+        "JL746_S2": "ung1∆pol3_01",
+        "JL747_S2": "ung1∆pol3_01",
+        "JL749_S2": "ung1∆pol3_01",
+        "JL750_S2": "ung1∆pol3_01",
+
         "JL799_S4": "ung1∆pol3_01",
         "JL800_S4": "ung1∆pol3_01",
         
         "JL801_S4": "ung1∆",
         "JL803_S5": "ung1∆",
+        "JL804_S2": "ung1∆",
+        "JL805_S2": "ung1∆",
         "JL806_S5": "ung1∆",
         "JL807_S5": "ung1∆",
-        "JL814_S5": "ung1∆",
-        "JL815_S5": "ung1∆",
-        "JL816_S6": "ung1∆",
+        "JL809_S2": "ung1∆",
+        "JL810_S2": "ung1∆",
+        "JL811_S2": "ung1∆",
+        "JL812_S2": "ung1∆",
+
+        "JL813_S2": "ung1∆pol3_01",
+        "JL814_S5": "ung1∆pol3_01",
+        "JL815_S5": "ung1∆pol3_01",
+        "JL816_S5": "ung1∆pol3_01",
+
+        "JL828_S3": "ung1∆SNPlessmsh2∆",
+        "JL829_S3": "ung1∆SNPlessmsh2∆",
+        "JL830_S3": "ung1∆SNPlessmsh2∆",
+        "JL833_S3": "ung1∆SNPlessmsh2∆",
+        "JL837_S3": "ung1∆SNPlessmsh2∆",
+        "JL839_S3": "ung1∆SNPlessmsh2∆",
+        "JL840_S3": "ung1∆SNPlessmsh2∆",
+        "JL841_S3": "ung1∆SNPlessmsh2∆",
+        "JL842_S3": "ung1∆SNPlessmsh2∆",
+        "JL846_S3": "ung1∆SNPlessmsh2∆",
+        "JL847_S3": "ung1∆SNPlessmsh2∆",
+        "JL850_S3": "ung1∆SNPlessmsh2∆",
+        "JL852_S3": "ung1∆SNPlessmsh2∆",
+        "JL853_S3": "ung1∆SNPlessmsh2∆",
+        "JL854_S3": "ung1∆SNPlessmsh2∆",
+        "JL858_S3": "ung1∆SNPlessmsh2∆",
+        "JL862_S3": "ung1∆SNPlessmsh2∆",
+        "JL863_S3": "ung1∆SNPlessmsh2∆",
+        "JL864_S3": "ung1∆SNPlessmsh2∆",
+        "JL866_S2": "ung1∆SNPlessmsh2∆",
+        "JL867_S2": "ung1∆SNPlessmsh2∆",
+        "JL869_S2": "ung1∆SNPlessmsh2∆",
+        "JL870_S2": "ung1∆SNPlessmsh2∆",
+        "JL872_S2": "ung1∆SNPlessmsh2∆",
+        "JL873_S2": "ung1∆SNPlessmsh2∆",
+        "JL877_S2": "ung1∆SNPlessmsh2∆",
+        "JL879_S2": "ung1∆SNPlessmsh2∆",
+        "JL880_S2": "ung1∆SNPlessmsh2∆",
+        "JL881_S2": "ung1∆SNPlessmsh2∆",
+        "JL882_S2": "ung1∆SNPlessmsh2∆",
+        "JL884_S2": "ung1∆SNPlessmsh2∆",
+        "JL885_S2": "ung1∆SNPlessmsh2∆",
+        "JL886_S2": "ung1∆SNPlessmsh2∆",
+        "JL888_S2": "ung1∆SNPlessmsh2∆",
+        "JL890_S2": "ung1∆SNPlessmsh2∆",
+        "JL891_S2": "ung1∆SNPlessmsh2∆",
+        "JL892_S2": "ung1∆SNPlessmsh2∆",
+        "JL893_S2": "ung1∆SNPlessmsh2∆",
+        "JL896_S2": "ung1∆SNPlessmsh2∆",
+        "JL898_S2": "ung1∆SNPlessmsh2∆",
+        "JL899_S2": "ung1∆SNPlessmsh2∆",
+        "JL900_S2": "ung1∆SNPlessmsh2∆",
+
+        "JL902_S2": "ung1∆",
+        "JL903_S2": "ung1∆",
+        "JL904_S2": "ung1∆",
+        "JL905_S2": "ung1∆",
+        "JL906_S2": "ung1∆",
+        "JL908_S2": "ung1∆",
+        "JL909_S2": "ung1∆",
+        "JL912_S2": "ung1∆",
+        "JL914_S2": "ung1∆",
+        "JL915_S2": "ung1∆",
+        "JL916_S2": "ung1∆",
+        "JL925_S2": "ung1∆",
+        "JL929_S2": "ung1∆",
+        "JL931_S2": "ung1∆",
+        "JL932_S2": "ung1∆",
+
+        "JL933_S2": "ung1∆msh6∆",
+        "JL935_S2": "ung1∆msh6∆",
+        "JL936_S2": "ung1∆msh6∆",
+        "JL937_S2": "ung1∆msh6∆",
+        "JL938_S2": "ung1∆msh6∆",
+        "JL939_S2": "ung1∆msh6∆",
+        "JL943_S2": "ung1∆msh6∆",
+        "JL944_S2": "ung1∆msh6∆",
+        "JL947_S2": "ung1∆msh6∆",
+        "JL948_S2": "ung1∆msh6∆",
+        "JL953_S2": "ung1∆msh6∆",
+        "JL955_S2": "ung1∆msh2∆",
+        "JL957_S2": "ung1∆msh6∆",
+        "JL958_S2": "ung1∆msh6∆",
+        "JL959_S2": "ung1∆msh6∆",
+        "JL962_S2": "ung1∆msh6∆",
+        "JL963_S2": "ung1∆msh6∆",
+        "JL964_S3": "ung1∆msh6∆",
+        "JL965_S3": "ung1∆msh6∆",
+        "JL966_S3": "ung1∆msh6∆",
+        "JL967_S3": "ung1∆msh6∆",
+        "JL968_S3": "ung1∆msh6∆",
+        "JL970_S3": "ung1∆msh6∆",
+        "JL971_S3": "ung1∆msh6∆",
+        "JL973_S3": "ung1∆msh6∆",
+        "JL974_S3": "ung1∆msh6∆",
+        "JL975_S3": "ung1∆msh6∆",
+        "JL977_S3": "ung1∆msh6∆",
+        "JL978_S2": "ung1∆msh6∆",
+        "JL979_S2": "ung1∆msh6∆",
+        "JL980_S2": "ung1∆msh6∆",
+        "JL981_S3": "ung1∆msh6∆",
     
-        "JK2_1_CT": "ung1∆", #ura selected #copied
-        "JK2_2_TA": "ung1∆", #ura selected #copied
-        "JK2_3_CC": "ung1∆", #ura selected #copied
-        "JK2_4_TG": "ung1∆", #ura selected #copied
-        "JK2_5_GA": "ung1∆", #ura selected #copied
-        "JK2_6_TG": "ung1∆", #ura selected #copied
-        "JK2_7_GT": "ung1∆", #ura selected #copied
-        "JK2_9B_C": "ung1∆", #ura selected #copied
-        "JK2_11B_": "ung1∆", #ura selected #copied
-        "JK2_12B_": "ung1∆", #ura selected #copied
-        "JK2_13_G": "ung1∆", #ura selected #copied
-        "JK2_14_A": "ung1∆", #ura selected #copied
-        "JK2_18B_": "ung1∆", #ura selected #copied
-        "JK2_19B_": "ung1∆", #ura selected #copied
+        # "JK2_1_CT": "ung1∆", #ura selected #copied
+        # "JK2_2_TA": "ung1∆", #ura selected #copied
+        # "JK2_3_CC": "ung1∆", #ura selected #copied
+        # "JK2_4_TG": "ung1∆", #ura selected #copied
+        # "JK2_5_GA": "ung1∆", #ura selected #copied
+        # "JK2_6_TG": "ung1∆", #ura selected #copied
+        # "JK2_7_GT": "ung1∆", #ura selected #copied
+        # "JK2_9B_C": "ung1∆", #ura selected #copied
+        # "JK2_11B_": "ung1∆", #ura selected #copied
+        # "JK2_12B_": "ung1∆", #ura selected #copied
+        # "JK2_13_G": "ung1∆", #ura selected #copied
+        # "JK2_14_A": "ung1∆", #ura selected #copied
+        # "JK2_18B_": "ung1∆", #ura selected #copied
+        # "JK2_19B_": "ung1∆", #ura selected #copied
 
-        "JK2_55_C": "ung1∆", #ura selected #copied
-        "JK2_56_C": "ung1∆", #ura selected #copied
-        "JK2_57_A": "ung1∆", #ura selected #copied
-        "JK2_58_A": "ung1∆", #ura selected #copied
-        "JK2_59_C": "ung1∆", #ura selected #copied
-        "JK2_60_A": "ung1∆", #ura selected #copied
-        "JK2_61_C": "ung1∆", #ura selected #copied
-        "JK2_62_C": "ung1∆", #ura selected #copied
-        "JK2_63_A": "ung1∆", #ura selected #copied
-        "JK2_64_G": "ung1∆", #ura selected #copied
-        "JK2_65_C": "ung1∆", #ura selected #copied
-        "JK2_66_T": "ung1∆", #ura selected #copied
-        "JK2_67_G": "ung1∆", #ura selected #copied
-        "JK2_68_A": "ung1∆", #ura selected #copied
-        "JK2_69_A": "ung1∆", #ura selected #copied
-        "JK2_70_G": "ung1∆", #ura selected #copied
-        "JK2_71_C": "ung1∆", #ura selected #copied
-        "JK2_72_G": "ung1∆", #ura selected #copied
-        "JK2_73_G": "ung1∆", #ura selected #copied
-        "JK2_74_G": "ung1∆", #ura selected #copied
-        "JK2_75_A": "ung1∆", #ura selected #copied
-        "JK2_76_C": "ung1∆", #ura selected #copied
-        "JK2_77_C": "ung1∆", #ura selected #copied
-        "JK2_78_T": "ung1∆", #ura selected #copied
+        # "JK2_55_C": "ung1∆", #ura selected #copied
+        # "JK2_56_C": "ung1∆", #ura selected #copied
+        # "JK2_57_A": "ung1∆", #ura selected #copied
+        # "JK2_58_A": "ung1∆", #ura selected #copied
+        # "JK2_59_C": "ung1∆", #ura selected #copied
+        # "JK2_60_A": "ung1∆", #ura selected #copied
+        # "JK2_61_C": "ung1∆", #ura selected #copied
+        # "JK2_62_C": "ung1∆", #ura selected #copied
+        # "JK2_63_A": "ung1∆", #ura selected #copied
+        # "JK2_64_G": "ung1∆", #ura selected #copied
+        # "JK2_65_C": "ung1∆", #ura selected #copied
+        # "JK2_66_T": "ung1∆", #ura selected #copied
+        # "JK2_67_G": "ung1∆", #ura selected #copied
+        # "JK2_68_A": "ung1∆", #ura selected #copied
+        # "JK2_69_A": "ung1∆", #ura selected #copied
+        # "JK2_70_G": "ung1∆", #ura selected #copied
+        # "JK2_71_C": "ung1∆", #ura selected #copied
+        # "JK2_72_G": "ung1∆", #ura selected #copied
+        # "JK2_73_G": "ung1∆", #ura selected #copied
+        # "JK2_74_G": "ung1∆", #ura selected #copied
+        # "JK2_75_A": "ung1∆", #ura selected #copied
+        # "JK2_76_C": "ung1∆", #ura selected #copied
+        # "JK2_77_C": "ung1∆", #ura selected #copied
+        # "JK2_78_T": "ung1∆", #ura selected #copied
 
-        "JMT49_CK": "ung1∆", #copied
-        "JMT50_CK": "ung1∆", #copied
-        "JMT51_CK": "ung1∆", #copied
-        "JMT52_CK": "ung1∆", #copied
-        "JMT53_CK": "ung1∆", #copied
-        "JMT54_CK": "ung1∆", #copied
-        "JMT55_CK": "ung1∆", #copied
-        "JMT56_CK": "ung1∆", #copied
+        # "JMT49_CK": "ung1∆", #copied
+        # "JMT50_CK": "ung1∆", #copied
+        # "JMT51_CK": "ung1∆", #copied
+        # "JMT52_CK": "ung1∆", #copied
+        # "JMT53_CK": "ung1∆", #copied
+        # "JMT54_CK": "ung1∆", #copied
+        # "JMT55_CK": "ung1∆", #copied
+        # "JMT56_CK": "ung1∆", #copied
 
-        "JT30_CKD": "ung1∆", #ura selected #copied
-        "JT31_CKD": "ung1∆", #ura selected #copied
-        "JT32_CKD": "ung1∆", #ura selected #copied
-        "JT34_CKD": "ung1∆", #ura selected #copied
-        "JT35_CKD": "ung1∆", #ura selected #copied
-        "JT36_CKD": "ung1∆", #ura selected #copied
-        "JT37_CKD": "ung1∆", #ura selected #copied
+        # "JT30_CKD": "ung1∆", #ura selected #copied
+        # "JT31_CKD": "ung1∆", #ura selected #copied
+        # "JT32_CKD": "ung1∆", #ura selected #copied
+        # "JT34_CKD": "ung1∆", #ura selected #copied
+        # "JT35_CKD": "ung1∆", #ura selected #copied
+        # "JT36_CKD": "ung1∆", #ura selected #copied
+        # "JT37_CKD": "ung1∆", #ura selected #copied
 
-        "MSH2_1_c": "ung1∆msh2∆",
-        "MSH2_2_c": "ung1∆msh2∆",
-        "MSH2_3_c": "ung1∆msh2∆",
-        "MSH2_4_c": "ung1∆msh2∆",
-        "MSH2_5_c": "ung1∆msh2∆",
+        # "MSH2_1_c": "ung1∆msh2∆",
+        # "MSH2_2_c": "ung1∆msh2∆",
+        # "MSH2_3_c": "ung1∆msh2∆",
+        # "MSH2_4_c": "ung1∆msh2∆",
+        # "MSH2_5_c": "ung1∆msh2∆",
         
-        "MSH2_7_c": "ung1∆msh2∆",
-        "MSH2_8_c": "ung1∆msh2∆",
-        "MSH2_9_c": "ung1∆msh2∆", # May be poor sequencing results
-        "MSH2_10_": "ung1∆msh2∆",
-        "MSH2_11_": "ung1∆msh2∆",
-        "MSH2_12_": "ung1∆msh2∆",
-        "MSH2_13_": "ung1∆msh2∆",
-        "MSH2_14_": "ung1∆msh2∆",
-        "MSH2_15_": "ung1∆msh2∆",
-        "MSH2_16_": "ung1∆msh2∆",
-        "MSH2_17_": "ung1∆msh2∆",
-        "MSH2_18_": "ung1∆msh2∆",
-        "MSH2_19_": "ung1∆msh2∆",
+        # "MSH2_7_c": "ung1∆msh2∆",
+        # "MSH2_8_c": "ung1∆msh2∆",
+        # "MSH2_9_c": "ung1∆msh2∆", # May be poor sequencing results
+        # "MSH2_10_": "ung1∆msh2∆",
+        # "MSH2_11_": "ung1∆msh2∆",
+        # "MSH2_12_": "ung1∆msh2∆",
+        # "MSH2_13_": "ung1∆msh2∆",
+        # "MSH2_14_": "ung1∆msh2∆",
+        # "MSH2_15_": "ung1∆msh2∆",
+        # "MSH2_16_": "ung1∆msh2∆",
+        # "MSH2_17_": "ung1∆msh2∆",
+        # "MSH2_18_": "ung1∆msh2∆",
+        # "MSH2_19_": "ung1∆msh2∆",
         
-        "MSH2_21_": "ung1∆msh2∆",
-        "MSH2_22_": "ung1∆msh2∆",
-        "MSH2_23_": "ung1∆msh2∆",
+        # "MSH2_21_": "ung1∆msh2∆",
+        # "MSH2_22_": "ung1∆msh2∆",
+        # "MSH2_23_": "ung1∆msh2∆",
         
-        "MSH2_25_": "ung1∆msh2∆",
-        "MSH2_26_": "ung1∆msh2∆",
-        "MSH2_27_": "ung1∆msh2∆",
-        "MSH2_28_": "ung1∆msh2∆",
-        "MSH2_29_": "ung1∆msh2∆",
-        "MSH2_30_": "ung1∆msh2∆",
-        "msh2e-29": "ung1∆msh2∆",
-        "msh2e-36": "ung1∆msh2∆",
-        "msh2e-38": "ung1∆msh2∆",
-        "msh2e-39": "ung1∆msh2∆",
-        "msh2e-40": "ung1∆msh2∆",
-        "msh2e-41": "ung1∆msh2∆",
-        "msh2e-44": "ung1∆msh2∆",
-        "msh2e-48": "ung1∆msh2∆",
-        "msh2e-49": "ung1∆msh2∆",
-        "msh2e-50": "ung1∆msh2∆",
-        "msh2e-51": "ung1∆msh2∆",
-        "msh2e-52": "ung1∆msh2∆",
-        "msh2e-53": "ung1∆msh2∆",
-        "msh2e-54": "ung1∆msh2∆",
-        "msh2e-55": "ung1∆msh2∆",
-        "msh2e-56": "ung1∆msh2∆",
-        "msh2e-57": "ung1∆msh2∆",
-        "msh2e-58": "ung1∆msh2∆",
-        "msh2e-59": "ung1∆msh2∆",
-        "msh2e-60": "ung1∆msh2∆",
-        "msh2e-61": "ung1∆msh2∆",
-        "msh2e-62": "ung1∆msh2∆",
-        "msh2e-63": "ung1∆msh2∆",
-        "msh2e-64": "ung1∆msh2∆",
+        # "MSH2_25_": "ung1∆msh2∆",
+        # "MSH2_26_": "ung1∆msh2∆",
+        # "MSH2_27_": "ung1∆msh2∆",
+        # "MSH2_28_": "ung1∆msh2∆",
+        # "MSH2_29_": "ung1∆msh2∆",
+        # "MSH2_30_": "ung1∆msh2∆",
+        # "msh2e-29": "ung1∆msh2∆",
+        # "msh2e-36": "ung1∆msh2∆",
+        # "msh2e-38": "ung1∆msh2∆",
+        # "msh2e-39": "ung1∆msh2∆",
+        # "msh2e-40": "ung1∆msh2∆",
+        # "msh2e-41": "ung1∆msh2∆",
+        # "msh2e-44": "ung1∆msh2∆",
+        # "msh2e-48": "ung1∆msh2∆",
+        # "msh2e-49": "ung1∆msh2∆",
+        # "msh2e-50": "ung1∆msh2∆",
+        # "msh2e-51": "ung1∆msh2∆",
+        # "msh2e-52": "ung1∆msh2∆",
+        # "msh2e-53": "ung1∆msh2∆",
+        # "msh2e-54": "ung1∆msh2∆",
+        # "msh2e-55": "ung1∆msh2∆",
+        # "msh2e-56": "ung1∆msh2∆",
+        # "msh2e-57": "ung1∆msh2∆",
+        # "msh2e-58": "ung1∆msh2∆",
+        # "msh2e-59": "ung1∆msh2∆",
+        # "msh2e-60": "ung1∆msh2∆",
+        # "msh2e-61": "ung1∆msh2∆",
+        # "msh2e-62": "ung1∆msh2∆",
+        # "msh2e-63": "ung1∆msh2∆",
+        # "msh2e-64": "ung1∆msh2∆",
 
-        "mlh1u-1_": "ung1∆mlh1∆",
-        "mlh1u-2_": "ung1∆mlh1∆",
-        "mlh1u-3_": "ung1∆mlh1∆",
-        "mlh1u-4_": "ung1∆mlh1∆",
-        "mlh1u-5_": "ung1∆mlh1∆",
-        "mlh1u-6_": "ung1∆mlh1∆",
-        "mlh1u-7_": "ung1∆mlh1∆",
-        "mlh1u-8_": "ung1∆mlh1∆",
-        "mlh1u-9_": "ung1∆mlh1∆",
-        "mlh1u-10": "ung1∆mlh1∆",
-        "mlh1u-11": "ung1∆mlh1∆",
-        "mlh1u-12": "ung1∆mlh1∆",
-        "mlh1u-25": "ung1∆mlh1∆",
-        "mlh1u-26": "ung1∆mlh1∆",
-        "mlh1u-28": "ung1∆mlh1∆",
-        "mlh1u-29": "ung1∆mlh1∆",
-        "mlh1u-31": "ung1∆mlh1∆",
-        "mlh1u-32": "ung1∆mlh1∆",
-        "mlh1u-34": "ung1∆mlh1∆",
-        "mlh1u-35": "ung1∆mlh1∆",
-        "mlh1u-36": "ung1∆mlh1∆",
-        "mlh1u-37": "ung1∆mlh1∆",
+        # "mlh1u-1_": "ung1∆mlh1∆",
+        # "mlh1u-2_": "ung1∆mlh1∆",
+        # "mlh1u-3_": "ung1∆mlh1∆",
+        # "mlh1u-4_": "ung1∆mlh1∆",
+        # "mlh1u-5_": "ung1∆mlh1∆",
+        # "mlh1u-6_": "ung1∆mlh1∆",
+        # "mlh1u-7_": "ung1∆mlh1∆",
+        # "mlh1u-8_": "ung1∆mlh1∆",
+        # "mlh1u-9_": "ung1∆mlh1∆",
+        # "mlh1u-10": "ung1∆mlh1∆",
+        # "mlh1u-11": "ung1∆mlh1∆",
+        # "mlh1u-12": "ung1∆mlh1∆",
+        # "mlh1u-25": "ung1∆mlh1∆",
+        # "mlh1u-26": "ung1∆mlh1∆",
+        # "mlh1u-28": "ung1∆mlh1∆",
+        # "mlh1u-29": "ung1∆mlh1∆",
+        # "mlh1u-31": "ung1∆mlh1∆",
+        # "mlh1u-32": "ung1∆mlh1∆",
+        # "mlh1u-34": "ung1∆mlh1∆",
+        # "mlh1u-35": "ung1∆mlh1∆",
+        # "mlh1u-36": "ung1∆mlh1∆",
+        # "mlh1u-37": "ung1∆mlh1∆",
 
-        "HSMKR001": "ung1∆ 37C_A3A", #2024 small heat shock 72 hr 37 Celsius
-        "HSMKR002": "ung1∆ 37C_A3A",
-        "HSMKR003": "ung1∆ 37C_A3A",
-        "HSMKR004": "ung1∆ 37C_A3A",
-        "HSMKR005": "ung1∆ 37C_A3A",
-        "HSMKR006": "ung1∆ 37C_A3A",
-        "HSMKR007": "ung1∆ 37C_A3A",
-        "HSMKR008": "ung1∆ 37C_A3A",
-        "HSMKR009": "ung1∆ 37C_A3A",
-        "HSMKR010": "ung1∆ 37C_A3A",
+        # "HSMKR001": "ung1∆ 37C_A3A", #2024 small heat shock 72 hr 37 Celsius
+        # "HSMKR002": "ung1∆ 37C_A3A",
+        # "HSMKR003": "ung1∆ 37C_A3A",
+        # "HSMKR004": "ung1∆ 37C_A3A",
+        # "HSMKR005": "ung1∆ 37C_A3A",
+        # "HSMKR006": "ung1∆ 37C_A3A",
+        # "HSMKR007": "ung1∆ 37C_A3A",
+        # "HSMKR008": "ung1∆ 37C_A3A",
+        # "HSMKR009": "ung1∆ 37C_A3A",
+        # "HSMKR010": "ung1∆ 37C_A3A",
 
-        "RNHKR001": "ung1∆rnh201∆", #2025 RNH mutant
-        "RNHKR002": "ung1∆rnh201∆",
-        "RNHKR003": "ung1∆rnh201∆",
-        "RNHKR004": "ung1∆rnh201∆",
-        "RNHKR005": "ung1∆rnh201∆",
-        "RNHKR006": "ung1∆rnh201∆",
-        "RNHKR007": "ung1∆rnh201∆",
-        "RNHKR008": "ung1∆rnh201∆",
-        "RNHKR009": "ung1∆rnh201∆",
-        #"RNHKR010": "ung1∆rnh201∆",
-        "RNHKR011": "ung1∆rnh201∆",
-        "RNHKR012": "ung1∆rnh201∆",
-        "RNHKR013": "ung1∆rnh201∆",
-        "RNHKR014": "ung1∆rnh201∆",
-        "RNHKR015": "ung1∆rnh201∆",
-        "RNHKR016": "ung1∆rnh201∆",
-        "RNHKR017": "ung1∆rnh201∆",
-        "RNHKR018": "ung1∆rnh201∆",
-        "RNHKR019": "ung1∆rnh201∆",
-        "RNHKR020": "ung1∆rnh201∆",
-        "RNHKR021": "ung1∆rnh201∆",
-        "RNHKR022": "ung1∆rnh1∆",
-        "RNHKR023": "ung1∆rnh1∆",
-        "RNHKR024": "ung1∆rnh1∆",
-        "RNHKR025": "ung1∆rnh1∆",
-        "RNHKR026": "ung1∆rnh1∆",
-        "RNHKR027": "ung1∆rnh1∆",
-        "RNHKR028": "ung1∆rnh1∆",
-        "RNHKR029": "ung1∆rnh1∆",
-        "RNHKR030": "ung1∆rnh1∆",
-        "RNHKR031": "ung1∆rnh1∆",
-        "RNHKR032": "ung1∆rnh1∆",
-        "RNHKR033": "ung1∆rnh1∆",
-        "RNHKR034": "ung1∆rnh1∆",
-        "RNHKR035": "ung1∆rnh1∆",
-        "RNHKR036": "ung1∆rnh1∆",
-        "RNHKR037": "ung1∆rnh1∆",
-        "RNHKR038": "ung1∆rnh1∆",
-        "RNHKR039": "ung1∆rnh1∆",
-        "RNHKR040": "ung1∆rnh1∆",
-        "RNHKR041": "ung1∆rnh1∆",
-        "RNHKR042": "ung1∆rnh1∆",
-        "RNHKR043": "ung1∆rnh1∆",
-        "RNHKR044": "ung1∆rnh1∆",
-        "RNHKR045": "ung1∆rnh1∆rnh201∆",
-        "RNHKR046": "ung1∆rnh1∆rnh201∆",
-        "RNHKR047": "ung1∆rnh1∆rnh201∆",
-        "RNHKR048": "ung1∆rnh1∆rnh201∆",
-        "RNHKR049": "ung1∆rnh1∆rnh201∆",
-        "RNHKR050": "ung1∆rnh1∆rnh201∆",
-        "RNHKR051": "ung1∆rnh1∆rnh201∆",
-        "RNHKR052": "ung1∆rnh1∆rnh201∆",
-        "RNHKR053": "ung1∆rnh1∆rnh201∆",
-        "RNHKR054": "ung1∆rnh1∆rnh201∆",
-        "RNHKR055": "ung1∆rnh1∆rnh201∆",
-        "RNHKR056": "ung1∆rnh1∆rnh201∆",
-        "RNHKR057": "ung1∆rnh1∆rnh201∆",
-        "RNHKR058": "ung1∆rnh1∆rnh201∆",
-        "RNHKR059": "ung1∆rnh1∆rnh201∆",
-        "RNHKR060": "ung1∆rnh1∆rnh201∆",
-        "RNHKR061": "ung1∆rnh1∆rnh201∆",
-        "RNHKR062": "ung1∆rnh1∆rnh201∆",
-        "RNHKR063": "ung1∆rnh1∆rnh201∆",
-        "RNHKR064": "ung1∆rnh1∆rnh201∆",
-        "RNHKR065": "ung1∆rnh1∆rnh201∆",
-        "RNHKR066": "ung1∆rnh1∆rnh201∆",
-        "RNHKR067": "ung1∆rnh1∆rnh201∆",
-        "RNHKR068": "ung1∆rnh1∆rnh201∆",
+        # "RNHKR001": "ung1∆rnh201∆", #2025 RNH mutant
+        # "RNHKR002": "ung1∆rnh201∆",
+        # "RNHKR003": "ung1∆rnh201∆",
+        # "RNHKR004": "ung1∆rnh201∆",
+        # "RNHKR005": "ung1∆rnh201∆",
+        # "RNHKR006": "ung1∆rnh201∆",
+        # "RNHKR007": "ung1∆rnh201∆",
+        # "RNHKR008": "ung1∆rnh201∆",
+        # "RNHKR009": "ung1∆rnh201∆",
+        # #"RNHKR010": "ung1∆rnh201∆",
+        # "RNHKR011": "ung1∆rnh201∆",
+        # "RNHKR012": "ung1∆rnh201∆",
+        # "RNHKR013": "ung1∆rnh201∆",
+        # "RNHKR014": "ung1∆rnh201∆",
+        # "RNHKR015": "ung1∆rnh201∆",
+        # "RNHKR016": "ung1∆rnh201∆",
+        # "RNHKR017": "ung1∆rnh201∆",
+        # "RNHKR018": "ung1∆rnh201∆",
+        # "RNHKR019": "ung1∆rnh201∆",
+        # "RNHKR020": "ung1∆rnh201∆",
+        # "RNHKR021": "ung1∆rnh201∆",
+        # "RNHKR022": "ung1∆rnh1∆",
+        # "RNHKR023": "ung1∆rnh1∆",
+        # "RNHKR024": "ung1∆rnh1∆",
+        # "RNHKR025": "ung1∆rnh1∆",
+        # "RNHKR026": "ung1∆rnh1∆",
+        # "RNHKR027": "ung1∆rnh1∆",
+        # "RNHKR028": "ung1∆rnh1∆",
+        # "RNHKR029": "ung1∆rnh1∆",
+        # "RNHKR030": "ung1∆rnh1∆",
+        # "RNHKR031": "ung1∆rnh1∆",
+        # "RNHKR032": "ung1∆rnh1∆",
+        # "RNHKR033": "ung1∆rnh1∆",
+        # "RNHKR034": "ung1∆rnh1∆",
+        # "RNHKR035": "ung1∆rnh1∆",
+        # "RNHKR036": "ung1∆rnh1∆",
+        # "RNHKR037": "ung1∆rnh1∆",
+        # "RNHKR038": "ung1∆rnh1∆",
+        # "RNHKR039": "ung1∆rnh1∆",
+        # "RNHKR040": "ung1∆rnh1∆",
+        # "RNHKR041": "ung1∆rnh1∆",
+        # "RNHKR042": "ung1∆rnh1∆",
+        # "RNHKR043": "ung1∆rnh1∆",
+        # "RNHKR044": "ung1∆rnh1∆",
+        # "RNHKR045": "ung1∆rnh1∆rnh201∆",
+        # "RNHKR046": "ung1∆rnh1∆rnh201∆",
+        # "RNHKR047": "ung1∆rnh1∆rnh201∆",
+        # "RNHKR048": "ung1∆rnh1∆rnh201∆",
+        # "RNHKR049": "ung1∆rnh1∆rnh201∆",
+        # "RNHKR050": "ung1∆rnh1∆rnh201∆",
+        # "RNHKR051": "ung1∆rnh1∆rnh201∆",
+        # "RNHKR052": "ung1∆rnh1∆rnh201∆",
+        # "RNHKR053": "ung1∆rnh1∆rnh201∆",
+        # "RNHKR054": "ung1∆rnh1∆rnh201∆",
+        # "RNHKR055": "ung1∆rnh1∆rnh201∆",
+        # "RNHKR056": "ung1∆rnh1∆rnh201∆",
+        # "RNHKR057": "ung1∆rnh1∆rnh201∆",
+        # "RNHKR058": "ung1∆rnh1∆rnh201∆",
+        # "RNHKR059": "ung1∆rnh1∆rnh201∆",
+        # "RNHKR060": "ung1∆rnh1∆rnh201∆",
+        # "RNHKR061": "ung1∆rnh1∆rnh201∆",
+        # "RNHKR062": "ung1∆rnh1∆rnh201∆",
+        # "RNHKR063": "ung1∆rnh1∆rnh201∆",
+        # "RNHKR064": "ung1∆rnh1∆rnh201∆",
+        # "RNHKR065": "ung1∆rnh1∆rnh201∆",
+        # "RNHKR066": "ung1∆rnh1∆rnh201∆",
+        # "RNHKR067": "ung1∆rnh1∆rnh201∆",
+        # "RNHKR068": "ung1∆rnh1∆rnh201∆",
     },
     
 

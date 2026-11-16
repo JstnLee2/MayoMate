@@ -1,81 +1,130 @@
 # MayoMate
-`MayoMate` is a Python package designed to facilitate analysis and interpretation of meiotic mutagenesis yeast data. `MayoMate` toolkit allows for discovery and visualization of recombination events, mutations, and mutation clusters in Whole Genome Sequencing (WGS) data of Saccharomyces cerevisiae meiotic outcomes. 
 
-`MayoMate` processes Illumina read alignments and variant calls from CLC Genomics Workbench 20 to identify high-confidence de novo SNVs and mutation clusters. It provides tools to create a Parental Reference Genome for calling parental SNPs using a single modified reference genome. `MayoMate`'s predefined classes store sample information, including SNVs, mutation clusters, parental SNPs, recombination events, sample names, and genotypes. These properties enable event classification, genomic feature correlation, hypermutable ssDNA estimation, mutation rate normalization, statistical analysis, and the creation of customized plots, summaries, and tables.
+`MayoMate` is a Python toolkit for analyzing and interpreting meiotic mutagenesis data in yeast. It finds and visualizes recombination events, mutations, and mutation clusters in Whole Genome Sequencing (WGS) data from *Saccharomyces cerevisiae* meiotic outcomes.
+
+`MayoMate` processes Illumina read alignments and variant calls from CLC Genomics Workbench 20 to identify high-confidence de novo SNVs and mutation clusters. It can build a Parental Reference Genome so that parental SNPs can be called against a single modified reference. Its classes store per-sample information (SNVs, mutation clusters, parental SNPs, recombination events, sample names, and genotypes), which supports event classification, genomic feature correlation, hypermutable ssDNA estimation, mutation rate normalization, statistical testing, and custom plots, summaries, and tables.
 
 ### Features
-- Identifying and visualizing recombination events based on a panel of parental SNPs.
-- Identifying, visualizing, and classifying mutation clusters.
-- Associating mutation clusters with identified recombination events.
-- Inferring the length of hypermutable single-stranded DNA (ssDNA).
-- Identifying promoter mutation rates.
-- Conducting statistical comparisons between various mutants.
+- Identify and visualize recombination events (gene conversions and crossovers) from a panel of parental SNPs.
+- Identify, visualize, and classify mutation clusters.
+- Associate mutation clusters with recombination events.
+- Infer the length of hypermutable single-stranded DNA (ssDNA).
+- Estimate mutation rates around promoters and other genomic features.
+- Compare statistics between mutant genotypes.
+- Measure parental SNP density and test whether mutation clusters are enriched in SNP-dense regions.
+- Plot pre- and post-meiotic mutation frequencies.
 
-## Requirements
+### Pipeline overview
+![Meiotic Pipeline_new_bg](https://github.com/user-attachments/assets/62bee6ce-a6d3-4793-94d5-b0d6fe9d154b)
 
-This package was developed and tested on a standard desktop computer with 16GB of RAM using Python 3.10.4. The following packages are required to run `MayoMate`:
+## Getting started
 
-- `betterbeeswarm==0.2.0`
-- `bio-aid==0.3.1`
-- `matplotlib==3.5.2`
-- `natsort==8.3.1`
-- `numpy==1.22.3`
-- `pandas==1.4.2`
-- `plotly==5.11.0`
-- `scipy==1.8.1`
-- `seaborn==0.13.2`
+### Requirements
+MayoMate was developed and tested with Python 3.10 on a standard desktop computer with 16 GB of RAM. Its dependencies are pinned in `requirements.txt`:
 
-You can install quckly these packages using the following command:
+| Package | Version |
+|---|---|
+| betterbeeswarm | 0.2.0 |
+| bio-aid | 0.3.1 |
+| matplotlib | 3.5.2 |
+| natsort | 8.3.1 |
+| numpy | 1.22.3 |
+| pandas | 1.4.2 |
+| plotly | 5.11.0 |
+| scipy | 1.8.1 |
+| seaborn | 0.13.2 |
 
-```bash
-pip install -r requirements.txt
-```
+You also need Jupyter to run the main notebook.
 
-## Installation
-To install `MayoMate`, you can clone this repository by running the command below. This step shouldn't take more than a few minutes depending on your internet connection.
+### Installation
+Clone the repository and install the dependencies into a virtual environment. This should take a few minutes.
 
 ```bash
 git clone https://github.com/malkovalab/MayoMate.git
+cd MayoMate
+python -m venv myenv
+
+# Windows
+myenv\Scripts\activate
+# macOS / Linux
+source myenv/bin/activate
+
+pip install -r requirements.txt
+pip install jupyter
 ```
 
+Run every script and the notebook from the repository root. All paths in the settings files are relative to it.
+
+### Configuration
+Before running anything, check the settings in [`mayo/settings/`](mayo/settings/):
+
+| File | What it controls |
+|---|---|
+| `config.py` | `config`: paths to the parental, parental-SNP, and SNV call folders and the reference FASTA, plus analysis parameters (`SNP_NUM`, `SIG`, `CLUST_INTER_MUT_MAX`, `CLUSTER_TYPE_ANALYSIS`). `config_cluster`: inputs and outputs for `cluster_analysis.py`. |
+| `sample_genotypes.py` | Maps each sample name to its genotype and defines sample sets (for example, haploid samples). Add new samples here. |
+| `chromosome_lengths.py` | S288C chromosome names and lengths. |
+| `problematic_positions.py` | Genomic positions to exclude from analysis. |
+| `non_essential_genes.py` | List of non-essential genes used in feature analyses. |
+
+The defaults point to the example data under `data/sequencing_calls/CombinedSet/` and the reference `S288C_reference_sequencewoUra3wUra329wNAT.fa`.
+
 ## Usage
-To use `MayoMate`, please use the `main_playground_clean.ipynb` Jupyter notebook. This notebook provides a step-by-step guide on how to use `MayoMate`'s functions to help analyze and interpret meiotic mutagenesis yeast data. The repository contains a small portion of the dataset used in the full study. You can use that data to test that you have properly configured your environment and that `MayoMate` is working properly. You can see example outputs from the reduced dataset and their compute times within the notebook and within the log files. The outputs created by this notebook can be used for further downstream analysis and visualizations, for example, using scripts below.
 
-In addition to the `main_playground_clean.ipynb` a few other standalone scripts are provided to help with specific tasks and post-processing of the outputs. These scripts are:
-- `cluster_analysis.py`: This script is used to conduct analysis on called mutation clusters and compare cluster statistics between different mutants.
-- `cluster_coordination.py`: This script is used to identify and visualize the classess of mutation clusters (e.g. "single-switch", "non-switching", "multiple-switch", etc.) and their ssDNA contributions.
-- `remake_parental_reference.py`: This script is used to create a Parental Reference Genome for calling parental SNPs with CLC Genomics Workbench.
-- `find_imbalanced_snps.py`: This script is used to identify and visualize poorly resolved SNPs within the Parental Reference Genome, enabling their exclusion from the analysis.
-- `freqgraph.py`: This script is used to create mutation frequency bar graphs for the ura3-29 reporter.
-- `csv_to_paraBed.py`: This script is was used to convert the CLC Genomics Workbench variant call output to a format that can be used with `NIEHS/P-MACD` package. Not used in this version of `MayoMate`.
-- `SNP_dens_map.py`: This script is used to create a graph detailing distances between SNPs in the Parental Reference Genome.
-- `tracks.ipynb`: This Jupyter notebook is used to reconstruct the ssDNA tracks based on the identified recombination events, mutations, and mutation clusters. It also conducts statistical analysis on the ssDNA tracks between different mutants.
-- `transcription_graph`: This script is used to create a graph summarizing sA3A mutation rates for tRNA and protein-coding genes.
-- `run_association_simulation_parallel.py`: This script is used to run association simulations between recombination events and mutation clusters on a computing cluster for parallel processing and faster results.
+### Main workflow
+Start with [`main_playground_clean.ipynb`](main_playground_clean.ipynb). It walks through MayoMate's functions step by step: loading variant calls, filtering SNVs, calling parental SNPs and recombination events, calling and classifying mutation clusters, and making figures.
 
-### MayoMate Pipeline Overview
-![Meiotic Pipeline_new_bg](https://github.com/user-attachments/assets/62bee6ce-a6d3-4793-94d5-b0d6fe9d154b)
+The repository includes a small subset of the full study's data. Use it to confirm your environment is set up correctly. The notebook and its log files show example outputs and compute times for this subset. The notebook writes tables to `outputs/` and figures to `figures/`, and the scripts below take those outputs as input.
 
+### Running everything without user input (locally or on an HPC)
+`python run_notebook.py --continue-on-error` runs the whole notebook top to bottom and writes a per-cell report; `qsub run_mayomate.sge` does the same on an HPC (Open Grid Scheduler / Grid Engine) and then runs the analysis scripts. The first run processes every sample; later runs only process samples added since (`--rerun-all` to redo everything, see `mayo/sample_cache.py`). Genotype names, colors and the reference genotype are set in one file, `mayo/settings/genotype_colors.py`. See [HPC_RUN_GUIDE.md](HPC_RUN_GUIDE.md).
 
-### Data
-The data used in the `MayoMate` package is not provided in this repository. The data used in the `MayoMate` package is generated from Whole Genome Sequencing (WGS) data of Saccharomyces cerevisiae meiotic outcomes. The data is first processed using CLC Genomics Workbench 20 and then used as input for the `MayoMate` package to identify recombination events, mutations, and mutation clusters.
-Raw reads data can be found in the BioProject and the Sequence Read Archive (SRA) under the accession number PRJNA1225307
+### Analysis scripts
+These run after the notebook (`run_mayomate.sge` runs them automatically) and read its outputs. Run them from the repository root with `python <script>.py`; settings are at the top of each file or given on the command line (e.g. `--reference`).
 
-### Before you start
-Before you start using `MayoMate`, please make sure you have updated the `config.py` file with the correct paths to your input files and directories. The `config.py` file is located in the `MayoMate` directory. 
+| Script | Purpose |
+|---|---|
+| `cluster_analysis.py` | Analyzes called mutation clusters and compares cluster statistics between mutants. Uses `config_cluster`. |
+| `cluster_coordination.py` | Classifies mutation clusters by their relation to recombination switches (for example "single-switch", "non-switching", "multiple-switch") and plots their ssDNA contributions. |
+| `cluster_association_chi2.py` | Chi-squared test of recombination-associated clusters, each genotype vs. the reference genotype. Reads the notebook's saved pickle. |
 
-In addition, please make sure other settings files are also properly configured. These files are within mayo/settings directory.
+## Repository layout
 
+```
+MayoMate/
+├── mayo/                      # Core package
+│   ├── settings/              # Configuration: paths, parameters, sample genotypes
+│   ├── clusters/              # Mutation cluster tables and summaries
+│   ├── nbinom.py              # Negative binomial cluster calling (JT method)
+│   ├── find_GC_CO.py          # Gene conversion / crossover detection
+│   ├── *Table*.py             # Sample, SNP, parental and switch table classes
+│   └── sample_cache.py        # Per-sample cache: later runs only process new samples
+├── data/                      # Input data: CLC variant calls, genomic features, cluster tables
+├── outputs/                   # Generated tables, pickles, logs, sample cache
+├── figures/                   # Generated figures
+├── main_playground_clean.ipynb
+├── run_notebook.py            # Runs the notebook without user input
+├── run_mayomate.sge           # HPC job (qsub): notebook + analysis scripts
+├── cluster_*.py               # Analysis scripts (see above)
+├── S288C_reference_sequencewoUra3wUra329wNAT.fa   # Modified S288C reference
+└── requirements.txt
+```
+
+## Data
+This repository includes only a small subset of the data for testing. The full dataset comes from WGS of *S. cerevisiae* meiotic outcomes. Reads were processed with CLC Genomics Workbench 20, and the resulting variant calls are MayoMate's input.
+
+Raw reads are available from NCBI BioProject / SRA under accession **[PRJNA1225307](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA1225307)**.
 
 ## Contributing
-We welcome contributions to `MayoMate`! If you would like to contribute, please follow these steps:
+Contributions are welcome. To contribute:
 
 1. Fork the repository.
-2. Create a new branch (git checkout -b feature-branch).
-3. Make your changes.
-4. Commit your changes (git commit -am 'Add new feature').
-5. Push to the branch (git push origin feature-branch).
-6. Create a new Pull Request.
+2. Create a branch (`git checkout -b feature-branch`).
+3. Commit your changes (`git commit -am 'Add new feature'`).
+4. Push the branch (`git push origin feature-branch`).
+5. Open a pull request.
+
+## Authors
+MayoMate was developed by Jerzy Twarowski in the Malkova Lab (University of Iowa). Later analysis scripts were added by lab contributors.
 
 ## License
-MayoMate is licensed under the MIT License.
+MayoMate is released under the [MIT License](LICENSE).

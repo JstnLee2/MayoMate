@@ -10,6 +10,19 @@ import seaborn as sns
 import betterbeeswarm
 from mayo.settings import genotype_dict as genotype_dict_master
 from mayo.settings import config as cfg
+from mayo.settings.genotype_colors import ANALYSIS_GENOTYPES, REFERENCE_GENOTYPE as DEFAULT_REFERENCE, genotype_palette, genotype_order
+
+# ============================== SETTINGS ==============================
+# Genotype names, colors and plot order come from mayo/settings/genotype_colors.py.
+REFERENCE_GENOTYPE = DEFAULT_REFERENCE   # genotype all others are compared against (default "ung1∆"); e.g. "ung1∆SNPless"
+GENOTYPES = ANALYSIS_GENOTYPES           # genotypes to include; all by default. Or a list, e.g.
+# GENOTYPES = ["ung1∆SNPless", "ung1∆SNPlessmsh2∆"]
+# (the reference genotype is always added if it's missing, since it's needed for the tests)
+# Other settings (p-values, association types, sample sets) are in the __main__ block at the bottom.
+# Command line overrides:  python cluster_coordination.py --reference ung1∆SNPless --genotypes ung1∆SNPless ung1∆SNPlessmsh2∆
+# =====================================================================
+
+os.makedirs("outputs/logs", exist_ok=True)
 logging.basicConfig(
     handlers=[logging.FileHandler(
         filename="outputs/logs/cluster_coordination.log", 
@@ -183,7 +196,7 @@ def get_cluster_dict(
 def plot_stacked_bar_chart_clusters(
         master_df_bar: pd.DataFrame,
         title: str = "Proportion of Cluster Types",
-        order = ["ung1∆", "ung1∆NAT", "exo1-nd", "pol32∆", "exo1-nd pol32∆"],
+        order: list | None = None,
         save_name: str|None = None) -> None:
     """
     This function plots a stacked bar chart of cluster types by genotype.
@@ -233,7 +246,9 @@ def plot_stacked_bar_chart_clusters(
         if category not in master_df_bar.columns:
             master_df_bar[category] = 0
     master_df_bar = master_df_bar[categories]
-    master_df_bar = master_df_bar.reindex(order)
+    if order is None:
+        order = genotype_order(master_df_bar.index)
+    master_df_bar = master_df_bar.reindex([g for g in order if g in master_df_bar.index])
     sns.set_style('whitegrid')
     ax = master_df_bar.plot(kind='bar', stacked=True, figsize=(10,8), fontsize=20, rot=45, color=colors, legend=False, grid=True, width=0.75)
     for label in ax.get_xticklabels():
@@ -280,40 +295,10 @@ def plot_cluster_length(master_df: pd.DataFrame, save_name: str|None = None) -> 
         "multiple switching", 
         "non canonical"]
     
-    order_genotype = [
-        "ung1∆", 
-        # "ung1∆fun30∆",
-        # "ung1∆mph1∆",
-        "ung1∆msh2∆",
-        "ung1∆msh3∆",
-        "ung1∆mlh1∆",
-        # "ung1∆rnh201∆",
-        # "ung1∆rnh1∆",
-        # "ung1∆ 37C_A3A",
-        # "ung1∆ 37C_EV",
-        "ung1∆mlh2∆",
-        "ung1∆SNPless",
-        "ung1∆pol3_01",
-        "ung1∆pol3_5DV"
-        ]
-    
-    #make a colormap for the cluster types
-    pallette = {
-        "ung1∆": "tab:blue", 
-        # "ung1∆fun30∆": "tab:orange", 
-        # "ung1∆mph1∆": "tab:brown", 
-        "ung1∆msh2∆": "tab:green", 
-        "ung1∆msh3∆": "tab:cyan",
-        "ung1∆mlh1∆": "tab:purple",
-        # "ung1∆rnh201∆": "tab:cyan",
-        # "ung1∆rnh1∆": "tab:red",
-        # "ung1∆ 37C_A3A": "tab:olive",
-        # "ung1∆ 37C_EV": "tab:olive",
-        "ung1∆mlh2∆": "tab:pink",
-        "ung1∆SNPless": "tab:blue",
-        "ung1∆pol3_01": "tab:orange",
-        "ung1∆pol3_5DV": "tab:purple"
-       }
+    # genotypes in the data, in the shared plotting order, with the shared colors
+    # (mayo/settings/genotype_colors.py)
+    order_genotype = genotype_order(master_df["genotype"].unique())
+    pallette = genotype_palette(order_genotype)
 
     #make a series of violinplots for each cluster type by each genotype
     fig, ax = plt.subplots(figsize=(45, 20))
@@ -354,6 +339,8 @@ def remove_not_assocaited_clusters(
     #count the number of cluster IDs by unique Dataset_Cluster_ID
     unique_cluster_ids = df["Dataset_Cluster_ID"].value_counts()
     logging.info(f"Unique Dataset_Cluster_ID in df: {len(unique_cluster_ids)}")
+    for genotype in df['genotype'].unique():
+        logging.info(f"Merged df Genotype: {genotype}, # of clusters: {len(df[df['genotype'] == genotype]['Dataset_Cluster_ID'].value_counts())}")
 
     #remove the rows that are not associated with a switch event
     feature = association_feature
@@ -370,6 +357,8 @@ def remove_not_assocaited_clusters(
     unique_cluster_ids_after = df["Dataset_Cluster_ID"].value_counts()
 
     logging.info(f"Removed {len(unique_cluster_ids) - len(unique_cluster_ids_after)} clusters that are not associated with a switch event. There are {len(unique_cluster_ids_after)} clusters left.")
+    for i in df['genotype'].unique():
+        logging.info(f"Genotype: {i}, # of clusters left: {len(df[df['genotype'] == i]['Dataset_Cluster_ID'].value_counts())}")
 
     return df
 
@@ -389,6 +378,14 @@ def filter_clusters_by_association_with_rec(
     elif cluster_association == "not_associated" or cluster_association == "rec_associated":
         df_association = df_association=pd.read_csv(f'outputs/associations/{cluster_caller}/{snp_support}snp/master_clusters_association_{cluster_data_dir}_{snp_support}snp_{cluster_distance}.csv')
 
+        for sample in df_association['Sample_Name'].unique():
+            # Match sample names with genotypes in the genotype_dict
+            genotype = genotype_dict.get(sample, None)
+            # print the # of clusters for each genotype
+        for genotype in df['genotype'].unique():
+            num_clusters = len(df_association[df_association['Sample_Name'] == sample]['Cluster_ID_'].unique())
+            logging.info(f"df_Association Genotype: {genotype}, # of clusters: {num_clusters}")
+
         if cluster_association == "rec_associated":
             df = remove_not_assocaited_clusters(df, df_association, association_feature, inverse=False)
         elif cluster_association == "not_associated":
@@ -398,19 +395,26 @@ def filter_clusters_by_association_with_rec(
         logging.error(f"Cluster_association: '{cluster_association}' not found. Choose 'rec_associated', 'not_associated' or 'all_clusters'")
         raise ValueError
     
+    
     return df
 
-def cluster_type_mann_whitney(master_df: pd.DataFrame) -> pd.DataFrame:
+def cluster_type_mann_whitney(master_df: pd.DataFrame, reference: str = REFERENCE_GENOTYPE) -> pd.DataFrame:
+    """Mann-Whitney U test of cluster length, each genotype vs. the reference genotype, per cluster type."""
     from scipy.stats import mannwhitneyu
     import numpy as np
 
     test_df = pd.DataFrame()
     master_df['cluster_length'] = master_df['cluster_length'].astype(float)
+    logging.info(f"Mann-Whitney U tests of cluster length vs. reference genotype: {reference}")
+    if reference not in set(master_df['genotype']):
+        logging.warning(f"Reference genotype '{reference}' has no clusters in this data; all p-values will be NA.")
 
     for cluster_type in master_df['cluster_type'].unique():
-        for genotype in master_df['genotype'].unique():
+        for genotype in genotype_order(master_df['genotype'].unique()):
+            if genotype == reference:
+                continue
             df1 = master_df[(master_df['genotype'] == genotype) & (master_df['cluster_type'] == cluster_type)]
-            df2 = master_df[(master_df['genotype'] == 'ung1∆') & (master_df['cluster_type'] == cluster_type)]
+            df2 = master_df[(master_df['genotype'] == reference) & (master_df['cluster_type'] == cluster_type)]
             
             mean1, median1 = df1['cluster_length'].mean(), df1['cluster_length'].median()
             mean2, median2 = df2['cluster_length'].mean(), df2['cluster_length'].median()
@@ -423,7 +427,7 @@ def cluster_type_mann_whitney(master_df: pd.DataFrame) -> pd.DataFrame:
                 test_df = pd.concat([
                     test_df, pd.DataFrame({
                         'cluster_type': cluster_type, 
-                        'genotype': genotype, 
+                        'genotype': genotype, 'reference': reference,
                         'p_val': p}, 
                     index=[0])],
                     ignore_index=True)
@@ -435,7 +439,7 @@ def cluster_type_mann_whitney(master_df: pd.DataFrame) -> pd.DataFrame:
                     test_df, 
                     pd.DataFrame({
                         'cluster_type': cluster_type, 
-                        'genotype': genotype, 
+                        'genotype': genotype, 'reference': reference,
                         'p_val': np.nan},
                     index=[0])], 
                     ignore_index=True)
@@ -481,26 +485,20 @@ if __name__ == "__main__":
         # 0.000001
         ]
     
-    GENOTYPES: list[str] = [
-        # "ung1∆ non-selected",
-        "ung1∆",
-        # #"ung1∆NAT",
-        # "ung1∆fun30∆",
-        # "ung1∆mph1∆",
-        "ung1∆msh2∆",
-        "ung1∆msh3∆",
-        "ung1∆mlh1∆",
-        # "ung1∆rnh201∆",
-        # "ung1∆rnh1∆",
-        # "ung1∆ 37C_A3A",
-        # "ung1∆ 37C_EV",
-        # "ung1∆mlh2∆",
-        # "ung1∆SNPless",
-        # "ung1∆pol3_01",
-        # "ung1∆pol3_5DV"
-        # WT
-        ]
-    
+    # genotypes / reference: set at the top of this file (SETTINGS), or on the command line
+    import argparse
+    parser = argparse.ArgumentParser(description="Classify mutation clusters by switching pattern and compare genotypes.")
+    parser.add_argument("--reference", default=REFERENCE_GENOTYPE, help=f"reference genotype (default: {REFERENCE_GENOTYPE})")
+    parser.add_argument("--genotypes", nargs="+", default=None, help="genotypes to include (default: GENOTYPES at the top of this file)")
+    cli = parser.parse_args()
+    REFERENCE_GENOTYPE = cli.reference
+    GENOTYPES = genotype_order(list(cli.genotypes or GENOTYPES))
+    if REFERENCE_GENOTYPE not in GENOTYPES:
+        GENOTYPES = genotype_order([REFERENCE_GENOTYPE] + GENOTYPES)
+    logging.info(f"Reference genotype: {REFERENCE_GENOTYPE}")
+    logging.info(f"Genotypes: {GENOTYPES}")
+    print(f"Reference genotype: {REFERENCE_GENOTYPE} | genotypes: {GENOTYPES} | log: outputs/logs/cluster_coordination.log")
+
     meta_master_df = pd.DataFrame()
     meta_test_df = pd.DataFrame()
     for snp_support in snp_support_vals:
@@ -531,6 +529,8 @@ if __name__ == "__main__":
                             "Sample": "Tumor_Sample_Barcode",
                             "Region": "Start_position"
                             })
+                        for genotype in df['genotype'].unique():
+                            logging.info(f"Cluster_data_file genotype: {genotype}, # of clusters: {len(df[df['genotype'] == genotype]['Dataset_Cluster_ID'].value_counts())}")
                         
                     df = filter_clusters_by_association_with_rec(
                         cluster_caller,
@@ -624,10 +624,10 @@ if __name__ == "__main__":
                     print(proportion_master_df_bar)
                     logging.info("propotion of cluster types (number) by genotype")
                     logging.info(proportion_master_df_bar)
-                    # Logging the # of clusters for each genotype
-                    # for genotype in proportion_master_df_bar.index:
-                    #     total_clusters = master_df_bar.loc[genotype].sum()
-                    #     logging.info(f"Total clusters for genotype {genotype}: {total_clusters}")
+                    # Logging the number of clusters for each genotype
+                    for genotype in proportion_master_df_bar.index:
+                        total_clusters = master_df_bar.loc[genotype].sum()
+                        logging.info(f"Total clusters for genotype {genotype}: {total_clusters}")
 
                     plot_stacked_bar_chart_clusters(
                         proportion_master_df_bar, 
@@ -696,7 +696,7 @@ if __name__ == "__main__":
                     master_df["snp_support"] = snp_support
                     meta_master_df = pd.concat([meta_master_df, master_df], ignore_index=True)
 
-                    test_df = cluster_type_mann_whitney(master_df)
+                    test_df = cluster_type_mann_whitney(master_df, reference=REFERENCE_GENOTYPE)
                     test_df["cluster_caller"] = cluster_caller
                     test_df["cluster_distance"] = cluster_distance
                     test_df["cluster_p_val"] = cluster_data_dir
@@ -707,4 +707,7 @@ if __name__ == "__main__":
                     meta_test_df = pd.concat([meta_test_df, test_df], ignore_index=True)
 
     meta_master_df.to_csv(f"outputs/cluster_length_meta_df_{cluster_caller}.csv", encoding='utf-16', sep='\t', index=False)
-    meta_test_df.to_csv(f"outputs/cluster_length_meta_test_df_{cluster_caller}.csv", encoding='utf-16', sep='\t', index=False)
+    meta_test_df.to_csv(f"outputs/cluster_length_meta_test_df_{cluster_caller}_vs_{REFERENCE_GENOTYPE}.csv", encoding='utf-16', sep='\t', index=False)
+    from mayo.log_archive import keep_log_copy
+    logging.info("Done.")
+    print(f"Done. Log: outputs/logs/cluster_coordination.log (copy kept at {keep_log_copy('outputs/logs/cluster_coordination.log')})")
