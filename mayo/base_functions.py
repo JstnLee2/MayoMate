@@ -4271,6 +4271,10 @@ def get_mutations_around_rec_ev(
     else:
         master_relative_GC_CO_df = pd.DataFrame()
 
+    if master_relative_GC_CO_df.empty:
+        logging.warning(f"No mutations found around recombination events for {focus_genotype} ({mutation_type}).")
+        return master_relative_GC_CO_df
+
     master_relative_GC_CO_df = master_relative_GC_CO_df[~master_relative_GC_CO_df["Reference"].isin(["A", "T"])]
     master_relative_GC_CO_df = master_relative_GC_CO_df[~master_relative_GC_CO_df["Allele"].isin(["C", "G"])]
     master_relative_GC_CO_df = master_relative_GC_CO_df.drop(columns=["Chromosome", "Allele", "Coverage", "Frequency"])
@@ -4400,7 +4404,11 @@ def get_rec_ev_relative_A3A_SNVs_and_plot(
             homozygous_only=True,
             event_type=event_type,
             window_size=window_size)
-        
+
+        if master_relative_GC_CO_df.empty:
+            print(f"No mutations around recombination events for {focus_genotype} ({mutation_type}); skipping.")
+            continue
+
         plot_SNVs_around_rec_ev(
             master_relative_GC_CO_df, 
             title=focus_genotype, 
@@ -4488,7 +4496,14 @@ def plot_GC_CO_distribution_by_genotype(
         plt.xlabel("Event Type", fontsize=20, fontweight="bold")
 
         if save_name is not None:
-            plt.savefig(f"figures/{name}_{save_name}_{query_genotypes}.png", dpi=300, bbox_inches='tight')
+            genotype_part = str(query_genotypes)
+            if len(genotype_part) > 80:
+                # many genotypes joined with "+" can exceed Windows' 260-character path limit
+                import hashlib
+                n_genotypes = genotype_part.count("+") + 1
+                genotype_part = f"{n_genotypes}_genotypes_{hashlib.sha1(genotype_part.encode('utf-8')).hexdigest()[:8]}"
+                logging.info(f"{name}: genotype list too long for a file name; saved as '{genotype_part}' ({query_genotypes})")
+            plt.savefig(f"figures/{name}_{save_name}_{genotype_part}.png", dpi=300, bbox_inches='tight')
         
         if show:
             plt.show()
@@ -4573,6 +4588,15 @@ def get_all_rec_events_df(
 
             #get all positions of COs
             for chr in sample.CO_dict.keys():
+
+                #check if the chromosome is aneuploid or heterozygous (same filter as for GCs above)
+                if skip_aneuploid_heterozygous_chromosome:
+                    if sample.aneuploid == True or sample.heterozygous == True:
+                        if chr in sample.heterozygous_chromosomes:
+                            continue
+                        if chr in sample.aneuploid_chromosomes:
+                            continue
+
                 positions = sample.CO_dict[chr]
 
                 for position in positions:
@@ -5274,7 +5298,11 @@ def get_rec_ev_relative_A3A_SNVs_mod(
             homozygous_only=True,
             event_type="both",
             window_size=window_size)
-        
+
+        if master_relative_GC_CO_df.empty:
+            print(f"No mutations around recombination events for {focus_genotype} ({mutation_type}); skipping.")
+            continue
+
         #if Reference == G->A, then multiply the Region by -1 and change the Reference to C->T
         # master_relative_GC_CO_df.loc[master_relative_GC_CO_df["Reference"] == "G->A", "Region"] = master_relative_GC_CO_df["Region"] * -1
         # master_relative_GC_CO_df["Reference"] = master_relative_GC_CO_df["Reference"].replace(["G->A"], "C->T")
@@ -5287,11 +5315,11 @@ def get_rec_ev_relative_A3A_SNVs_mod(
         c_t_pos = len(master_relative_GC_CO_df[(master_relative_GC_CO_df['Region'] > 0) & (master_relative_GC_CO_df['Reference'] == 'C->T')])
         g_a_pos = len(master_relative_GC_CO_df[(master_relative_GC_CO_df['Region'] > 0) & (master_relative_GC_CO_df['Reference'] == 'G->A')])
 
-        print(f"C->T mutations: negative_region={c_t_neg}, positive_region={c_t_pos}, negative_c_t/negative_total={c_t_neg / (c_t_neg + g_a_neg)}")
-        print(f"G->A mutations: negative_region={g_a_neg}, positive_region={g_a_pos}, positive_g_a/positive_total={g_a_pos / (c_t_pos + g_a_pos)}")
+        print(f"C->T mutations: negative_region={c_t_neg}, positive_region={c_t_pos}, negative_c_t/negative_total={(c_t_neg / (c_t_neg + g_a_neg) if (c_t_neg + g_a_neg) else float('nan'))}")
+        print(f"G->A mutations: negative_region={g_a_neg}, positive_region={g_a_pos}, positive_g_a/positive_total={(g_a_pos / (c_t_pos + g_a_pos) if (c_t_pos + g_a_pos) else float('nan'))}")
 
-        print(f"Ratio of C->T mutations in the negative region: {c_t_neg / (c_t_neg + g_a_neg)}")
-        print(f"Ratio of G->A mutations in the positive region: {g_a_pos / (c_t_pos + g_a_pos)}")
+        print(f"Ratio of C->T mutations in the negative region: {(c_t_neg / (c_t_neg + g_a_neg) if (c_t_neg + g_a_neg) else float('nan'))}")
+        print(f"Ratio of G->A mutations in the positive region: {(g_a_pos / (c_t_pos + g_a_pos) if (c_t_pos + g_a_pos) else float('nan'))}")
 
         resection_pattern_mutations = c_t_neg + g_a_pos
         bir_pattern_mutations = g_a_neg + c_t_pos

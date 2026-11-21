@@ -157,11 +157,15 @@ delete its line from `rtg_checked_ok`.
 python cluster_association_chi2.py                      # all genotypes vs ung1∆
 python cluster_association_chi2.py --reference ung1∆SNPless
 python cluster_association_chi2.py --feature GC         # GC-associated clusters only (or CO)
+python cluster_association_chi2.py --include-het-chr    # also count clusters on heterozygous/aneuploid chromosomes
 ```
 
 It reads `outputs/partial_pickles/samples_parental_SNPs_JT_0.0001_1snp.pkl` (saved by the notebook),
 counts clusters associated / not associated with recombination for every genotype, and tests each
 genotype against the reference with a chi-squared test (and Fisher's exact test as a check).
+Clusters on a sample's heterozygous or aneuploid chromosomes are left out by default, as in the notebook's
+association table, because switches there are not reliable. The `excluded_het_aneuploid_chr` column gives
+how many were left out per genotype. Before 2026-11-20 they were counted.
 Results: `outputs/cluster_association_chi2_<feature>_vs_<reference>.csv`; details incl. every 2x2
 table: `outputs/logs/cluster_association_chi2.log` (latest; every run is also kept, see [Logs](#logs-every-run-is-kept)).
 

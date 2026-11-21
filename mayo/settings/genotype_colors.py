@@ -36,6 +36,27 @@ GENOTYPE_COLORS: dict[str, str] = {
     "ung1∆SNPlessmsh2∆": "tab:green",
     "ung1∆pol3_01":      "tab:olive",
     "ung1∆pol3_5DV":     "tab:brown",
+
+    # JL980-JL1849 set. Each genotype also has a "CLC" version (same isolates, called with the
+    # CLC pipeline; sample IDs JL0###/JL0####) drawn in a lighter shade of the same hue.
+    "ung1∆ 37C_Selected":         "goldenrod",
+    "ung1∆ 37C_NonSelected":      "darkkhaki",
+    "ung1∆msh6∆_NonSelected":     "chocolate",
+    "ung1∆_NonSelected":          "steelblue",
+    "ung1∆_zymolyaseheat":        "teal",
+    "ung1∆SNPlessmsh6∆":          "darkviolet",
+    "ung1∆SNPlessmsh3∆":          "mediumorchid",
+
+    "ung1∆CLC":                   "#aec7e8",   # light tab:blue
+    "ung1∆msh6∆CLC":              "#ffbb78",   # light tab:orange
+    "ung1∆SNPlessCLC":            "#c5b0d5",   # light tab:purple
+    "ung1∆ 37C_SelectedCLC":      "palegoldenrod",
+    "ung1∆ 37C_NonSelectedCLC":   "khaki",
+    "ung1∆msh6∆_NonSelectedCLC":  "sandybrown",
+    "ung1∆_NonSelectedCLC":       "lightsteelblue",
+    "ung1∆_zymolyaseheatCLC":     "mediumaquamarine",
+    "ung1∆SNPlessmsh6∆CLC":       "plum",
+    "ung1∆SNPlessmsh3∆CLC":       "thistle",
 }
 
 # Genotypes that have a color but are NOT part of the standard "all genotypes" analysis.

@@ -27,7 +27,7 @@
 #$ -pe smp 4                  # <-- EDIT: parallel environment name; list them with  qconf -spl
 #$ -l h_vmem=8G               # <-- EDIT if needed: memory PER CPU (4 x 8G = 32G total); some clusters use mem_free
 #$ -l h_rt=08:00:00           # run-time limit (measured 2.5 h on a laptop)
-##$ -q all.q                  # <-- EDIT: queue name, only if your cluster needs one (remove one '#'); list with  qconf -sql
+#$ -q all.q                  # <-- EDIT: queue name, only if your cluster needs one (remove one '#'); list with  qconf -sql
 ##$ -m ea                     # optional: email when the job ends/aborts (remove one '#' here and below)
 ##$ -M you@example.edu
 #
