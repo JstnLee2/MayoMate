@@ -6682,6 +6682,13 @@ def plot_normalized_rec_A3A(
     print(df_norm)
     print("working, point2")
 
+    # genotypes with no recombination events on haploid chromosomes (e.g. all isolates heterozygous) have no column
+    missing = [g for g in genotypes_include if g not in df_norm.columns]
+    if missing:
+        logging.warning(f"plot_normalized_rec_A3A: no mutations near recombination events for {missing} "
+                        f"(e.g. all their recombination events are on heterozygous/aneuploid chromosomes); left out of the plot")
+        genotypes_include = [g for g in genotypes_include if g in df_norm.columns]
+
     df_norm = df_norm[["Region_bin"] + genotypes_include] #only keep the genotypes we want to plot
 
     #first melt the dataframe into a long format, all genotypes in one column
