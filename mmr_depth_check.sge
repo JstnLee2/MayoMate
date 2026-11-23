@@ -1,0 +1,165 @@
+#!/bin/bash
+# =============================================================================
+# Open Grid Scheduler / Grid Engine (SGE) job:
+# read depth over the mismatch-repair genes (MSH2, MSH3, MSH6, MLH1, plus UNG1 as a
+# control) in every BAM, to confirm each mutant carries its deletion.
+#
+# For each BAM, `samtools bedcov` measures depth over:
+#   - each whole ORF,
+#   - 100 bp bins from 1.5 kb before to 1.5 kb after each ORF (to see partial deletions
+#     and where they start and end),
+#   - the whole chromosome (to normalise, so samples with different depth compare).
+# Then mmr_depth_check.py calls each gene DELETED / PARTIAL / PRESENT, compares that
+# with the genotype in mayo/settings/sample_genotypes.py, and draws depth profiles.
+#
+# Submit from the MayoMate folder on the cluster:
+#     qsub -v BAM_DIR=/path/to/bams mmr_depth_check.sge
+#
+# Options (all optional except BAM_DIR), given with -v and separated by commas:
+#     BAM_DIR=/path      folder holding the .bam files (searched 2 levels deep)      REQUIRED
+#     OUT_DIR=/path      where results go (default outputs/mmr_depth_check/<date_time>_job<id>)
+#                        Re-using an OUT_DIR skips BAMs already done (to resume a stopped job).
+#     MIN_MAPQ=20        ignore reads with mapping quality below this
+#     NAME_CHARS=8       sample name = first N characters of the BAM file name, as in the
+#                        genotype dictionary (same rule the notebook uses for the CSVs)
+#   e.g.  qsub -v BAM_DIR=/data/bams,MIN_MAPQ=30 mmr_depth_check.sge
+#
+# Results in OUT_DIR:
+#     mmr_calls_by_sample.tsv   one row per sample: call for each gene + any mismatch
+#     mmr_mismatches.tsv        only the samples whose depth disagrees with their genotype label
+#     mmr_calls_long.tsv        one row per sample x gene, with depths and the deleted interval
+#     mmr_genotype_vs_call.tsv  counts of calls per genotype
+#     mmr_bins.tsv              depth of every 100 bp bin (for your own plots)
+#     plots/<GENE>_depth_profile.png
+#     per_sample/<bam name>.bedcov   raw samtools output
+#
+# Lines marked  <-- EDIT  depend on your cluster (same as run_mayomate.sge).
+# =============================================================================
+#$ -N mmr_depth
+#$ -S /bin/bash
+#$ -cwd
+#$ -j y
+#$ -pe smp 8                  # <-- EDIT: parallel environment name; list with  qconf -spl
+#$ -l h_vmem=2G               # memory PER CPU; samtools bedcov needs very little
+#$ -l h_rt=04:00:00           # ~5-10 s per BAM per CPU; raise for thousands of BAMs
+##$ -q all.q                  # <-- EDIT: queue name, only if your cluster needs one (remove one '#')
+
+set -uo pipefail
+cd "${SGE_O_WORKDIR:-$PWD}"
+
+BAM_DIR="${BAM_DIR:-}"
+MIN_MAPQ="${MIN_MAPQ:-20}"
+NAME_CHARS="${NAME_CHARS:-8}"
+CPUS="${NSLOTS:-4}"
+OUT_DIR="${OUT_DIR:-outputs/mmr_depth_check/$(date +%Y%m%d_%H%M%S)_job${JOB_ID:-local}}"
+
+if [ -z "${BAM_DIR}" ] || [ ! -d "${BAM_DIR}" ]; then
+    echo "!!! BAM_DIR is not set or not a folder: '${BAM_DIR}'"
+    echo "    Submit with:  qsub -v BAM_DIR=/path/to/bams mmr_depth_check.sge"
+    exit 1
+fi
+mkdir -p "${OUT_DIR}/per_sample" "${OUT_DIR}/idx" "${OUT_DIR}/bed"
+
+# --- Tools -------------------------------------------------------------------
+if ! command -v module > /dev/null 2>&1; then
+    for f in /etc/profile.d/modules.sh /usr/share/Modules/init/bash /etc/profile.d/lmod.sh; do
+        [ -f "$f" ] && source "$f" && break
+    done
+fi
+if command -v module > /dev/null 2>&1; then
+    module load samtools 2>/dev/null || true     # <-- EDIT: e.g. samtools/1.17; list with  module avail samtools
+fi
+command -v samtools > /dev/null 2>&1 || { echo "!!! samtools not found: fix the 'module load samtools' line"; exit 1; }
+echo "Using $(samtools --version | head -1)"
+
+# --- Genes -------------------------------------------------------------------
+# name  chromosome  start  end   (1-based, inclusive; S288C R64-4-1, from data/orf_coding.fasta)
+# Keep in sync with GENES in mmr_depth_check.py.
+GENES="UNG1 XIII 229734 230813;MSH2 XV 147382 150276;MSH3 III 276764 279820;MSH6 IV 640109 643837;MLH1 XIII 594886 597195"
+WINDOW=1500   # bp shown on each side of the ORF
+BIN=100       # bin size, bp
+
+# --- One BAM -----------------------------------------------------------------
+process_bam() {
+    local bam="$1"
+    local name; name=$(basename "${bam}" .bam)
+    local out="${OUT_DIR}/per_sample/${name}.bedcov"
+    [ -s "${out}" ] && return 0                              # already done (resumed job)
+
+    # Index: use an existing one, else make one next to the BAM, else in OUT_DIR/idx.
+    local target="${bam}"
+    if [ ! -f "${bam}.bai" ] && [ ! -f "${bam%.bam}.bai" ] && [ ! -f "${bam}.csi" ]; then
+        if ! samtools index "${bam}" 2>/dev/null; then
+            samtools index "${bam}" "${OUT_DIR}/idx/${name}.bai" \
+                || { echo "${bam}	could not index" >> "${OUT_DIR}/failed.txt"; return 0; }
+            target="${bam}##idx##${OUT_DIR}/idx/${name}.bai"
+        fi
+    fi
+
+    # Regions, using the contig names this BAM uses (ref|NC_001147|, NC_001147.6, chrXV, XV, chr15 ...).
+    local bed="${OUT_DIR}/bed/${name}.bed"
+    samtools view -H "${bam}" | awk -v genes="${GENES}" -v W="${WINDOW}" -v B="${BIN}" '
+        BEGIN { acc["III"]="NC_001135"; acc["IV"]="NC_001136"; acc["XIII"]="NC_001145"; acc["XV"]="NC_001147"
+                num["III"]=3; num["IV"]=4; num["XIII"]=13; num["XV"]=15 }
+        $1 == "@SQ" { sn = ""; ln = 0
+                      for (i = 2; i <= NF; i++) { if ($i ~ /^SN:/) sn = substr($i, 4); if ($i ~ /^LN:/) ln = substr($i, 4) + 0 }
+                      names[++n] = sn; len[sn] = ln }
+        END {
+            ng = split(genes, gl, ";")
+            for (k = 1; k <= ng; k++) {
+                split(gl[k], f, " "); g = f[1]; key = f[2]; s = f[3] + 0; e = f[4] + 0
+                rom = tolower(key); c = ""
+                for (j = 1; j <= n; j++) {
+                    low = tolower(names[j])
+                    if (index(names[j], acc[key]) || low == rom || low == "chr" rom || low == "chromosome" rom \
+                        || low == num[key] || low == "chr" num[key]) { c = names[j]; break }
+                }
+                if (c == "") { print "no contig for chromosome " key " (" g ")" > "/dev/stderr"; continue }
+                print c "\t0\t" len[c] "\t" g "|chrom"
+                print c "\t" s - 1 "\t" e "\t" g "|orf"
+                for (b = s - W; b < e + W; b += B) print c "\t" b - 1 "\t" b - 1 + B "\t" g "|bin|" b
+            }
+        }' > "${bed}"
+    if [ ! -s "${bed}" ]; then
+        echo "${bam}	no matching chromosome names in BAM header" >> "${OUT_DIR}/failed.txt"; return 0
+    fi
+
+    # -j: don't count deletions/ref skips as depth.  Write to .tmp first so a killed job never leaves half a file.
+    if samtools bedcov -Q "${MIN_MAPQ}" -j "${bed}" "${target}" > "${out}.tmp" 2> "${out}.err"; then
+        mv "${out}.tmp" "${out}"; rm -f "${out}.err"
+    else
+        echo "${bam}	bedcov failed: $(head -c 300 "${out}.err" | tr '\n' ' ')" >> "${OUT_DIR}/failed.txt"
+        rm -f "${out}.tmp"
+    fi
+}
+export -f process_bam
+export OUT_DIR GENES WINDOW BIN MIN_MAPQ
+
+# --- Run all BAMs in parallel ------------------------------------------------
+N_BAMS=$(find "${BAM_DIR}" -maxdepth 2 -name '*.bam' | wc -l)
+echo "Job ${JOB_ID:-local} on ${HOSTNAME:-?} started $(date), ${CPUS} CPUs"
+echo "${N_BAMS} BAMs in ${BAM_DIR}  ->  ${OUT_DIR}   (MIN_MAPQ=${MIN_MAPQ})"
+[ "${N_BAMS}" -gt 0 ] || { echo "!!! no .bam files found in ${BAM_DIR}"; exit 1; }
+
+find "${BAM_DIR}" -maxdepth 2 -name '*.bam' -print0 \
+    | xargs -0 -P "${CPUS}" -I{} bash -c 'process_bam "$1"' _ {}
+
+N_DONE=$(find "${OUT_DIR}/per_sample" -maxdepth 1 -name '*.bedcov' | wc -l)
+echo "bedcov done for ${N_DONE}/${N_BAMS} BAMs ($(date))"
+[ -s "${OUT_DIR}/failed.txt" ] && { echo "!!! some BAMs failed, see ${OUT_DIR}/failed.txt:"; head "${OUT_DIR}/failed.txt"; }
+
+# --- Summarise (Python env made by run_mayomate.sge) -------------------------
+if [ -d venv_hpc ]; then
+    source venv_hpc/bin/activate
+else
+    command -v module > /dev/null 2>&1 && module load python/3.10 2>/dev/null   # <-- EDIT: same as run_mayomate.sge
+fi
+PYTHON=$(command -v python || command -v python3)
+[ -d venv_hpc ] || echo "(venv_hpc not found: using ${PYTHON}; it needs pandas and matplotlib)"
+export MPLBACKEND=Agg PYTHONIOENCODING=utf-8
+status=0
+"${PYTHON}" mmr_depth_check.py "${OUT_DIR}" --name-chars "${NAME_CHARS}" || status=1
+
+cp -p "mmr_depth.o${JOB_ID:-x}" "${OUT_DIR}/" 2>/dev/null
+echo "Finished $(date). Results: ${OUT_DIR}"
+exit ${status}

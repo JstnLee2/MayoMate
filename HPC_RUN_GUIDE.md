@@ -179,6 +179,30 @@ setting at the top (or `--reference` / `--genotypes` on the command line).
 | `cluster_analysis.py` | `outputs/logs/cluster_analysis.log` | `outputs/clusters/stats_vs_<reference>_<settings>.csv` (p-values of every genotype vs. reference, for each metric), `figures/clusters/` |
 | `cluster_coordination.py` | `outputs/logs/cluster_coordination.log` | `outputs/cluster_length_meta_test_df_JT_vs_<reference>.csv` (Mann-Whitney p-values per cluster type), `figures/cluster_types_by_pval/`, `figures/cluster_length_violin_by_pval/` |
 
+## 6b. Check the mismatch-repair deletions in the BAMs (`mmr_depth_check.sge`)
+
+Confirms each mutant carries its deletion by measuring read depth (`samtools bedcov`) over
+MSH2, MSH3, MSH6 and MLH1, with UNG1 as a control (deleted in every strain). It needs the
+BAM files; CLC read mappings must first be exported as BAM (CLC: *Export → BAM*).
+
+```
+qsub -v BAM_DIR=/path/to/bams mmr_depth_check.sge
+qsub -v BAM_DIR=/path/to/bams,MIN_MAPQ=30 mmr_depth_check.sge
+```
+
+- Check the `<-- EDIT` lines first (`-pe`, `module load samtools`), as for `run_mayomate.sge`.
+- Sample names are the first 8 characters of the BAM name (`NAME_CHARS=8`), matched against
+  `sample_genotypes.py`. The screen report says how many BAMs were not found there. If that's most of
+  them, the BAM names don't start like the CSV names; set `NAME_CHARS` or rename.
+- Any contig naming works (`ref|NC_001147|`, `NC_001147.6`, `chrXV`, `XV`, `chr15`).
+- Each gene gets **DELETED** (≥90% of the ORF has no reads), **PARTIAL** (≥200 bp of the ORF has no
+  reads, e.g. only the 5′ end), **PRESENT** or **LOW_DEPTH**. "No reads" = below 10% of the chromosome's mean depth.
+- Results go to `outputs/mmr_depth_check/<date_time>_job<id>/`:
+  `mmr_mismatches.tsv` (samples whose depth disagrees with their label), `mmr_calls_by_sample.tsv`,
+  `mmr_calls_long.tsv` (depths and the no-read interval, ±100 bp), and `plots/<GENE>_depth_profile.png`.
+- The summary can be re-run with other thresholds without re-reading the BAMs:
+  `python mmr_depth_check.py outputs/mmr_depth_check/<run> --min-partial-bins 3`.
+
 ## 7. What changed in the notebook
 
 A backup of the notebook before these changes is in `outputs/backups/main_playground_clean_before_cleanup_20261110.ipynb`.
