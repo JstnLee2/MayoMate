@@ -1251,6 +1251,19 @@ def addSwitchesAndClustersToNormalSamples(
     Returns:
         None
     '''
+    # samples are paired with switch tables by position, so both lists must hold the same samples in the
+    # same order (e.g. RTG samples removed from both); otherwise a sample would silently get no switches
+    sample_names = [s.name for s in switches_overlap_samples]
+    switch_names = [s.name for s in switches_list]
+    if sample_names != switch_names:
+        only_samples = sorted(set(sample_names) - set(switch_names))
+        only_switches = sorted(set(switch_names) - set(sample_names))
+        raise ValueError(
+            f"samples ({len(sample_names)}) and switches_list ({len(switch_names)}) do not match. "
+            f"Only in samples: {only_samples}. Only in switches_list: {only_switches}. "
+            f"{'Same samples, different order. ' if not only_samples and not only_switches else ''}"
+            f"Filter both lists the same way (e.g. by rtg_list) before calling this.")
+
     for index, sample in enumerate(switches_overlap_samples):
 
         sample.addSwitchesTable(switches_list[index])
@@ -6332,9 +6345,14 @@ def showRecombinationHotspots(
         genotype_dict: dict | None = None,
         genotype_list: list | None = None,
         show_most_common: int | None = None,
+        exclude_samples: list | None = None,
+        exclude_het_aneuploid_from: list | None = None,
         **kwargs):
     """
     This function visualizes recombination hotspots (switches) in a given chromosome.
+    exclude_samples: sample names to leave out (e.g. rtg_list). Default None.
+    exclude_het_aneuploid_from: sample objects with heterozygous_chromosomes / aneuploid_chromosomes
+        (e.g. switches_list); switches on those chromosomes of each sample are left out. Default None.
 
     Parameters:
     switches_path (str): The path to the file containing switch data. Default is "outputs/all_switches_2snps.tsv".
@@ -6350,6 +6368,23 @@ def showRecombinationHotspots(
     """
     #load df_switches_all from a file
     df_switches_all = pd.read_csv(switches_path, sep="\t") #all_switches.tsv
+
+    if exclude_samples:
+        excluded = sorted(set(df_switches_all["Sample_Name"]) & set(exclude_samples))
+        df_switches_all = df_switches_all[~df_switches_all["Sample_Name"].isin(exclude_samples)]
+        logging.info(f"showRecombinationHotspots: excluded {len(excluded)} samples: {excluded}")
+
+    if exclude_het_aneuploid_from:
+        # same chromosome filter as get_all_rec_events_df and the cluster-switch association
+        bad = {(s.name, chrom)
+               for s in exclude_het_aneuploid_from
+               for chrom in list(s.heterozygous_chromosomes or []) + list(s.aneuploid_chromosomes or [])}
+        on_bad = [(n, c) in bad for n, c in zip(df_switches_all["Sample_Name"], df_switches_all["Chromosome"])]
+        df_switches_all = df_switches_all[[not x for x in on_bad]]
+        msg = (f"showRecombinationHotspots: excluded {sum(on_bad)} switches on heterozygous/aneuploid chromosomes "
+               f"(all samples and chromosomes, before the genotype and Percent_Parental > 85 filters)")
+        print(msg)
+        logging.info(msg)
 
     if genotype_dict is not None:
         df_switches_all["Genotype"] = df_switches_all["Sample_Name"].map(genotype_dict)

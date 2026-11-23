@@ -22,7 +22,7 @@ chromosomes: list[list] = [
     ['ref|NC_001148|',948066]] #7.85%
 
 centromeres = pd.DataFrame([
-    ['chr1', 151582, "cen", NaN, NaN, NaN, "cen"],
+    ['chr1', 151582, "cen", NaN , NaN, NaN, "cen"],
     ['chr2',238323,  "cen", NaN, NaN, NaN, "cen"],
     ['chr3',114501,  "cen", NaN, NaN, NaN, "cen"],
     ['chr4',449821,  "cen", NaN, NaN, NaN, "cen"],
@@ -1327,6 +1327,11 @@ rtg_list = [
     "HSMKR010",
     "RNHK039",
     "RNHKR056",
+    "JL970_S3",
+    "JL962_S2",
+    "JL1022_S",
+    "JL587_S3",
+    "JL01022_", # CLC re-call of JL1022_S (RTG)
 
    "JK_92_CA",
     "JK2_48_G",
@@ -1451,6 +1456,13 @@ rtg_list = [
 # report_rtg_risk() (notebook cell 7) stops flagging them; they stay in the analysis.
 # Paste the line printed by report_rtg_risk() here, e.g.
 #     "JL587_S3",  # APSC 10.84, ung1∆SNPlessmsh2∆ - checked 2026-11-11, OK
-rtg_checked_ok = [
+rtg_checked_ok = ["JL707_S2", 
+                  "JL630_S3", 
+                  "JL939_S2", 
+                  "JL1100_S", 
+                  "JL613_S3", 
+                  "JL145_R1", 
+                  "JL1061_S", 
+                  "JL1009_S"
 
     ]

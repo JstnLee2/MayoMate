@@ -338,6 +338,16 @@ def create_combined_cluster_table(
 
         #need to add the genotype column
         genotype_dict = genotype_dict_master[cfg["genotype_dict"]]
+
+        # The cluster file is written before the notebook removes RTG samples, and fill_in_missing_samples
+        # re-adds every sample in genotype_dict, so drop rtg_list samples from both here.
+        from mayo.settings import rtg_list
+        rtg = set(rtg_list)
+        removed = sorted(rtg & (set(df["sample"]) | set(genotype_dict)))
+        if removed:
+            logging.info(f"Excluding {len(removed)} rtg_list samples from the cluster table: {removed}")
+        df = df[~df["sample"].isin(rtg)]
+        genotype_dict = {k: v for k, v in genotype_dict.items() if k not in rtg}
         df["genotype"] = df["sample"].map(genotype_dict).fillna("not found")
 
         # CRITICAL! Still need make sure that cluster_ID is called the same... (critical)

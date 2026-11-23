@@ -62,7 +62,7 @@ Before running anything, check the settings in [`mayo/settings/`](mayo/settings/
 |---|---|
 | `config.py` | `config`: paths to the parental, parental-SNP, and SNV call folders and the reference FASTA, plus analysis parameters (`SNP_NUM`, `SIG`, `CLUST_INTER_MUT_MAX`, `CLUSTER_TYPE_ANALYSIS`). `config_cluster`: inputs and outputs for `cluster_analysis.py`. |
 | `sample_genotypes.py` | Maps each sample name to its genotype and defines sample sets (for example, haploid samples). Add new samples here. |
-| `chromosome_lengths.py` | S288C chromosome names and lengths. |
+| `chromosome_lengths.py` | S288C chromosome names and lengths, sample sets, and the RTG lists `rtg_list` / `rtg_checked_ok` (see [RTG samples](#rtg-samples-and-heterozygous--aneuploid-chromosomes)). |
 | `problematic_positions.py` | Genomic positions to exclude from analysis. |
 | `non_essential_genes.py` | List of non-essential genes used in feature analyses. |
 
@@ -86,6 +86,28 @@ These run after the notebook (`run_mayomate.sge` runs them automatically) and re
 | `cluster_analysis.py` | Analyzes called mutation clusters and compares cluster statistics between mutants. Uses `config_cluster`. |
 | `cluster_coordination.py` | Classifies mutation clusters by their relation to recombination switches (for example "single-switch", "non-switching", "multiple-switch") and plots their ssDNA contributions. |
 | `cluster_association_chi2.py` | Chi-squared test of recombination-associated clusters, each genotype vs. the reference genotype. Reads the notebook's saved pickle. |
+
+### RTG samples and heterozygous / aneuploid chromosomes
+Return-to-growth (RTG) samples are diploids that entered meiosis and went back to mitotic growth. Their parental-SNP switches are not meiotic gene conversions or crossovers, so they are left out of the analysis.
+
+**Finding them.** Notebook cell 7 (`report_rtg_risk`) lists samples with an average per-SNP coverage (APSC) below 30 in `outputs/rtg_risk_report.csv`, with the path to each sample's coverage plot. Check each plot, then add the sample to one of two lists in `mayo/settings/chromosome_lengths.py`:
+- `rtg_list`: RTG, removed from the analysis.
+- `rtg_checked_ok`: not RTG, kept, and not flagged again.
+
+**Where `rtg_list` applies.**
+- Notebook: RTG samples are removed before switch calling (cell 9) and from the SNV samples before they are paired with their switches (cell 11). The switch hotspot plot (cell 27) also leaves them out.
+- Scripts: `cluster_analysis.py`, `cluster_association_chi2.py` and `cluster_coordination.py` each drop `rtg_list` samples themselves. After adding a sample to `rtg_list`, rerunning the scripts updates their results. Switch and GC/CO results need the notebook rerun from cell 9.
+
+**Heterozygous and aneuploid chromosomes.** Cell 5 finds them for each sample from coverage and SNP frequencies. Switches are called on every chromosome, and each analysis then leaves out the affected chromosomes:
+
+| Analysis (notebook cell) | Heterozygous / aneuploid chromosomes |
+|---|---|
+| Recombination events file and GC/CO location plot (16, 28) | Excluded |
+| Cluster–switch association (36) and chi-squared script | Excluded |
+| Switch hotspot plot (27) | Excluded |
+| Mutations around recombination events (25, 26) | Heterozygous excluded; aneuploid kept |
+| GC/CO distribution (24) | Whole sample skipped if it has either |
+| Haplotype block lengths (37, 38) | Whole sample skipped if heterozygous; aneuploid kept |
 
 ## Repository layout
 

@@ -45,7 +45,7 @@ REFERENCE_GENOTYPE = DEFAULT_REFERENCE   # genotype all others are compared agai
 GENOTYPES = ANALYSIS_GENOTYPES           # genotypes to test; all by default
 FEATURE = "both"                         # "both" (any recombination event), "GC" or "CO"
 CLUSTER_CALLER, SIG, SNP_NUM = "JT", 0.0001, 1
-REMOVE_RTG = False                       # True = drop samples in rtg_list (the notebook cell did not)
+REMOVE_RTG = True                        # True = drop samples in rtg_list (so rtg_list additions apply without rerunning the notebook)
 INCLUDE_HET_CHR = False                  # True = also count clusters on heterozygous/aneuploid chromosomes
 LOG_FILE = "outputs/logs/cluster_association_chi2.log"
 # =====================================================================
