@@ -250,13 +250,16 @@ def plot_stacked_bar_chart_clusters(
         order = genotype_order(master_df_bar.index)
     master_df_bar = master_df_bar.reindex([g for g in order if g in master_df_bar.index])
     sns.set_style('whitegrid')
-    ax = master_df_bar.plot(kind='bar', stacked=True, figsize=(10,8), fontsize=20, rot=45, color=colors, legend=False, grid=True, width=0.75)
-    for label in ax.get_xticklabels():
-        label.set_ha('right')
+    # widen the figure with the number of genotypes (~0.55 in per bar) so the
+    # rotated genotype labels don't overlap; never narrower than the old 10 in
+    n_genotypes = len(master_df_bar.index)
+    fig_width = max(10, 0.55 * n_genotypes + 4)
+    tick_fontsize = 20 if n_genotypes <= 10 else 15
+    ax = master_df_bar.plot(kind='bar', stacked=True, figsize=(fig_width, 10), fontsize=20, rot=45, color=colors, legend=False, grid=True, width=0.75)
     plt.title(title, fontsize=30, fontweight='bold')
     plt.xlabel("Genotype", fontsize=20, fontweight='bold')
     plt.ylabel("% of Clusters", fontsize=20, fontweight='bold')
-    plt.xticks(rotation=45, fontstyle='italic', fontsize=20, ha='right')
+    plt.xticks(rotation=45, fontstyle='italic', fontsize=tick_fontsize, ha='right', rotation_mode='anchor')
     plt.legend(loc='center left', bbox_to_anchor=(1.0, 0.5), fontsize=12)
     plt.tight_layout()
     if save_name is not None:

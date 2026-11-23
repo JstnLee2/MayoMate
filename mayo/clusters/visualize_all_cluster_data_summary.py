@@ -134,14 +134,162 @@ def conduct_2_sample_kolmogorov_smirnov_test(set1: pd.DataFrame, set2: pd.DataFr
     print(f"Kolmogorov-Smirnov test: p-value = {pval_ks:.5e}, U = {u:.5e}")
     return pval_ks
 
+def pval_to_stars(pval: float, max_stars: int = 10) -> str:
+    """
+    Converts a p-value to significance asterisks:
+    p < 0.05 -> *, p < 0.01 -> **, p < 0.001 -> ***, p < 0.0001 -> ****, and one more
+    asterisk for every further order of magnitude. Returns "ns" when p >= 0.05 (or p is NaN).
+    """
+    if pval is None or pd.isna(pval) or pval >= 0.05:
+        return "ns"
+    stars, threshold = 1, 0.01
+    while pval < threshold and stars < max_stars:
+        stars += 1
+        threshold /= 10
+    return "*" * stars
+
+def add_significance_brackets(
+        ax,
+        comparisons: list,
+        rename_dict: dict | None = None,
+        show_ns: bool = False,
+        stars_only: bool = False,
+        ) -> None:
+    """
+    Draws a bracket above the violins for each tested pair, with significance asterisks on top.
+    With stars_only=True no brackets are drawn: the asterisks go in one row above the plot,
+    over the second genotype of each pair (the one compared against the reference).
+
+    Parameters:
+        ax: matplotlib Axes holding the violin plot (categorical x axis).
+        comparisons (list): (genotype_a, genotype_b, pval) tuples, using the original genotype names.
+        rename_dict (dict): mapping from original genotype names to the x tick labels used on the plot.
+        show_ns (bool): also draw brackets labelled "ns" for non-significant pairs. Defaults to False.
+        stars_only (bool): skip the brackets and only write asterisks (for busy plots). Defaults to False.
+    """
+    rename_dict = rename_dict or {}
+    x_of = {t.get_text(): t.get_position()[0] for t in ax.get_xticklabels()}
+
+    brackets = []
+    for genotype_a, genotype_b, pval in comparisons:
+        label = pval_to_stars(pval)
+        if label == "ns" and not show_ns:
+            continue
+        xa = x_of.get(rename_dict.get(genotype_a, genotype_a))
+        xb = x_of.get(rename_dict.get(genotype_b, genotype_b))
+        if xa is None or xb is None or xa == xb:
+            continue
+        brackets.append((min(xa, xb), max(xa, xb), label, xb))
+    if not brackets:
+        return
+
+    # work in "scaled" y units so brackets are evenly spaced on linear and log axes
+    log_scale = ax.get_yscale() == "log"
+    import numpy as np
+    to_scaled = np.log10 if log_scale else (lambda v: v)
+    from_scaled = (lambda v: 10 ** v) if log_scale else (lambda v: v)
+
+    ymin, ymax = ax.get_ylim()
+    s_min, s_max = to_scaled(ymin), to_scaled(ymax)
+    s_span = s_max - s_min
+    step = 0.12 * s_span      # vertical distance between stacked brackets
+    tick = 0.02 * s_span      # height of the bracket's end ticks
+
+    if stars_only:
+        for _, _, label, x in brackets:
+            ax.text(x, from_scaled(s_max), label, ha="center", va="bottom",
+                    fontsize=12 if label != "ns" else 10, fontweight="bold", color="black")
+        ax.set_ylim(top=from_scaled(s_max + 0.08 * s_span))
+        if not log_scale:
+            ax.set_yticks([t for t in ax.get_yticks() if ymin <= t <= ymax])
+            ax.set_ylim(bottom=ymin)
+        return
+
+    # shortest brackets go lowest so longer ones stack over them
+    brackets.sort(key=lambda b: (b[1] - b[0], b[0]))
+
+    # each bracket goes on the lowest level that doesn't overlap a bracket already on that level
+    levels = []  # list of lists of (x1, x2)
+    for x1, x2, label, _ in brackets:
+        level = 0
+        while level < len(levels) and any(not (x2 < a or x1 > b) for a, b in levels[level]):
+            level += 1
+        if level == len(levels):
+            levels.append([])
+        levels[level].append((x1, x2))
+
+        s_y = s_max + level * step
+        y_low, y_high = from_scaled(s_y), from_scaled(s_y + tick)
+        ax.plot([x1, x1, x2, x2], [y_low, y_high, y_high, y_low], color="black", lw=1.5, clip_on=False)
+        ax.text((x1 + x2) / 2, y_high, label, ha="center", va="bottom",
+                fontsize=14 if label != "ns" else 11, fontweight="bold", color="black")
+
+    # make room for the brackets and their labels
+    ax.set_ylim(top=from_scaled(s_max + len(levels) * step + 0.03 * s_span))
+
+    # keep y tick labels within the data range, not in the bracket area
+    if not log_scale:
+        ax.set_yticks([t for t in ax.get_yticks() if ymin <= t <= ymax])
+        ax.set_ylim(bottom=ymin)
+
+def add_median_labels(ax, df: pd.DataFrame, column: str, by: str = "genotype") -> None:
+    """
+    Writes each group's median just above the top of its violin.
+
+    Parameters:
+        ax: matplotlib Axes holding the violin plot (categorical x axis).
+        df (pandas.DataFrame): the plotted data; group names must match the x tick labels.
+        column (str): the plotted column.
+        by (str): the grouping column. Defaults to 'genotype'.
+    """
+    import numpy as np
+    from matplotlib.collections import PolyCollection
+
+    log_scale = ax.get_yscale() == "log"
+    to_scaled = np.log10 if log_scale else (lambda v: v)
+    from_scaled = (lambda v: 10 ** v) if log_scale else (lambda v: v)
+
+    # top of each violin body, keyed by its x center
+    violin_tops = {}
+    for coll in ax.collections:
+        if not isinstance(coll, PolyCollection):
+            continue
+        for path in coll.get_paths():
+            v = path.vertices
+            if len(v):
+                violin_tops[round((v[:, 0].min() + v[:, 0].max()) / 2)] = v[:, 1].max()
+
+    medians = df.groupby(by)[column].median()
+    ymin, ymax = ax.get_ylim()
+    s_span = to_scaled(ymax) - to_scaled(ymin)
+    highest = to_scaled(ymax)
+    for t in ax.get_xticklabels():
+        name, x = t.get_text(), t.get_position()[0]
+        if name not in medians.index or pd.isna(medians[name]):
+            continue
+        m = medians[name]
+        top = violin_tops.get(round(x), df.loc[df[by] == name, column].max())
+        s_y = to_scaled(top) + 0.02 * s_span
+        # whole numbers (and large values) without decimals, small fractional values with one decimal
+        label = f"{m:,.0f}" if float(m).is_integer() or abs(m) >= 100 else f"{m:,.1f}"
+        ax.text(x, from_scaled(s_y), label, ha="center", va="bottom", fontsize=11, fontweight="bold", color="dimgray")
+        highest = max(highest, s_y + 0.07 * s_span)  # leave room for the text itself
+
+    if highest > to_scaled(ymax):
+        ax.set_ylim(top=from_scaled(highest))
+
 def plot_violin_plt(
-        df: pd.DataFrame, 
-        column: str, 
+        df: pd.DataFrame,
+        column: str,
         save_name: str | None = "violin_plot.png",
         title: str = "",
         y_label: str = "",
         save: bool = True,
         show: bool = False,
+        comparisons: list | None = None,
+        show_ns: bool = False,
+        show_medians: bool = True,
+        max_genotypes_for_brackets: int = 8,
         **kwargs: dict
         ) -> None:
     """
@@ -158,6 +306,12 @@ def plot_violin_plt(
         by (str): The column to group the plot by. Defaults to 'Genotype'.
         root_fig_name (str): The name to use when saving the plot. Defaults to '.png'.
         save (bool): Whether or not to save the plot. Defaults to True.
+        comparisons (list): (genotype_a, genotype_b, pval) tuples; a bracket with significance
+            asterisks is drawn above the violins for each one. Defaults to None (no brackets).
+        show_ns (bool): also draw brackets for non-significant (p >= 0.05) pairs, labelled "ns".
+        show_medians (bool): write each genotype's median above its violin. Defaults to True.
+        max_genotypes_for_brackets (int): with more genotypes than this on the plot, only asterisks are
+            written above the violins (no bracket lines), to keep busy plots readable. Defaults to 8.
 
     Returns:
     None
@@ -170,8 +324,8 @@ def plot_violin_plt(
     rename_dict = {
         'ung1∆'                         : 'ung1∆',
         'ung1∆ EV'                      : 'ung1∆ EV',
-        'ung1∆msh2∆'                      : 'ung1∆\nmsh2∆',
-        'ung1∆mlh1∆'                     : 'ung1∆\nmlh1∆',
+        'ung1∆msh2∆'                    : 'ung1∆msh2∆',
+        'ung1∆mlh1∆'                    : 'ung1∆mlh1∆',
         'ung1∆NAT'                      : 'ung1∆NAT',
         'UNG1'                          : 'UNG1',
         'exo1-nd'                       : 'ung1∆\nexo1-nd',
@@ -253,6 +407,14 @@ def plot_violin_plt(
 
     y_span_percent_pad_top = y_span * 0.08
     plt.gca().set_ylim(top=ymax + y_span_percent_pad_top)
+
+    if show_medians:
+        add_median_labels(plt.gca(), df, column)
+
+    if comparisons:
+        n_plotted = len(plt.gca().get_xticklabels())
+        add_significance_brackets(plt.gca(), comparisons, rename_dict=rename_dict, show_ns=show_ns,
+                                  stars_only=n_plotted > max_genotypes_for_brackets)
 
     plt.tight_layout()
 
@@ -516,6 +678,10 @@ def  conduct_cluster_data_analysis(
                 print("Could not conduct Mann-Whitney U test on secondary comparison: uninduced, skipping...")
             stats_rows.append(row)
 
+        # brackets/asterisks on the violin plot use the all-samples Mann-Whitney U p-values
+        comparisons = [(r["reference"], r["genotype"], r["p_mannwhitney_all"])
+                       for r in stats_rows if r["metric"] == column and "p_mannwhitney_all" in r]
+
         plot_violin_plt(
             df=df.copy(),
             column=column,
@@ -523,6 +689,7 @@ def  conduct_cluster_data_analysis(
             title=columns_to_plot_titles_dict[column],
             y_label=columns_to_plot_y_labels_dict[column],
             save=save_plt,
+            comparisons=comparisons,
             **kwargs
             )
         
